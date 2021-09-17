@@ -1,0 +1,33 @@
+{
+    "compilerOptions": {
+        "module": "CommonJS",
+        "lib": ["es2019", "es2020"],
+        "target": "ES2019",
+        "experimentalDecorators": true,
+        "strict": true,
+        "alwaysStrict": true,
+        "resolveJsonModule": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "forceConsistentCasingInFileNames": true,
+        "importsNotUsedAsValues": "preserve",
+        "preserveConstEnums": true,
+        "declaration": true,
+        "sourceMap": true,
+        "isolatedModules": true,
+        "noImplicitOverride": true,
+        "noPropertyAccessFromIndexSignature": true,
+        "outDir": "dist",
+        "jsx": "react",
+        "jsxFactory": "JSX.createElement",
+        "jsxFragmentFactory": "JSX.Fragment",
+        "allowSyntheticDefaultImports": true,
+    },
+    "exclude": [
+        "node_modules",
+        "dist"
+    ],
+    "tsdocgen": {
+        "entryPoints": ["src"]
+    }
+}
