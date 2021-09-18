@@ -2,6 +2,7 @@ import { parse } from "comment-parser";
 import { JSDoc, Node } from "ts-morph";
 import EmitDocEvent from "../../decorators/EmitDocEvent";
 import { TsDocGenDoc } from "../../types";
+import SignatureDoc from "./SignatureDoc";
 
 export interface DocJSON {
     name: string;
@@ -20,11 +21,14 @@ class Doc<N extends Node> {
     public tags!: TsDocGenDoc['tags'];
     public node: N;
     public name: string;
+    public kind: string;
+    public signatures?: SignatureDoc[];
 
     constructor(node: N) {
         // Variables
         this.node = node;
         this.name = this.getName();
+        this.kind = this.node.getKindName();
 
         // Effects
         this.setDescriptionAndTags();

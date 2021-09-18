@@ -24,11 +24,9 @@
         "jsxFragmentFactory": "JSX.Fragment",
         "allowSyntheticDefaultImports": true,
     },
+    "include": ["src", "scripts"],
     "exclude": [
         "node_modules",
         "dist"
     ],
-    "tsdocgen": {
-        "entryPoints": ["src"]
-    }
 }

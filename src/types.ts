@@ -24,6 +24,9 @@ export type TSDocGenProject = {
  * The configration options for a TSDocGen project in {@link TSDocGenConfig}
  */
 export type TSDocGenProjectConfig = {
+  new(): void;
+  /** a function */
+  d: () => void;
   /** 
    * The location of the tsconfig.json file relative to the current working directory. 
    */

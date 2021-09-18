@@ -1,5 +1,5 @@
 import Config from "./models/Config";
-import { Directory, ClassDeclaration, EnumDeclaration, ExportedDeclarations, FunctionDeclaration, InterfaceDeclaration, Node, Project, SyntaxKind, TypeAliasDeclaration, VariableDeclaration } from "ts-morph";
+import { ClassDeclaration, EnumDeclaration, ExportedDeclarations, FunctionDeclaration, InterfaceDeclaration, Node, Project, SyntaxKind, TypeAliasDeclaration, VariableDeclaration } from "ts-morph";
 import { TSDocGenProject } from "./types";
 import { ProjectNameNotConfiguredError } from "./errors";
 import ClassDoc from "./models/documentation/ClassDoc";
@@ -62,16 +62,16 @@ class TSDocGen {
         }
     }
 
-    private recursivelyBuildTree = (rootDirectories: Directory[], map: {} = {}): any => {
-        return rootDirectories.reduce((currentMap, rootDirectory) => {
-            const name = rootDirectory.getBaseName();
+    // private recursivelyBuildTree = (rootDirectories: Directory[], map: {} = {}): any => {
+    //     return rootDirectories.reduce((currentMap, rootDirectory) => {
+    //         const name = rootDirectory.getBaseName();
 
-            return {
-                ...currentMap,
-                [name]: {},
-            }
-        }, map);
-    }
+    //         return {
+    //             ...currentMap,
+    //             [name]: {},
+    //         }
+    //     }, map);
+    // }
 
     /**
      * Builds an AST tree for a given typescript project.
@@ -84,10 +84,6 @@ class TSDocGen {
         });
 
         const { name: projectName = project.projectName } = project.packageJson;
-
-        const rootDirectories = tsProject.getRootDirectories();
-
-        console.log(this.recursivelyBuildTree(rootDirectories));
 
         if (!projectName) {
             throw new ProjectNameNotConfiguredError(project.tsConfigFilePath);
@@ -105,7 +101,7 @@ class TSDocGen {
             }
         }
 
-        console.log(tree);
+        // console.log(tree);
 
         return [projectName, tree];
     }
