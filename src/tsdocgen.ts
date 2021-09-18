@@ -1,16 +1,47 @@
 import Config from "./models/Config";
-import { ExportedDeclarations, Project } from "ts-morph";
-import buildAST from "./ast";
+import { Directory, ClassDeclaration, EnumDeclaration, ExportedDeclarations, FunctionDeclaration, InterfaceDeclaration, Node, Project, SyntaxKind, TypeAliasDeclaration, VariableDeclaration } from "ts-morph";
 import { TSDocGenProject } from "./types";
 import { ProjectNameNotConfiguredError } from "./errors";
+import ClassDoc from "./models/documentation/ClassDoc";
+import EmitEvent from "./decorators/EmitEvent";
+import FunctionDoc from "./models/documentation/FunctionDoc";
+import TypeAliasDoc from "./models/documentation/TypeAliasDoc";
+import InterfaceDoc from "./models/documentation/InterfaceDoc";
+import EnumDoc from "./models/documentation/EnumDoc";
+import VariableDoc from "./models/documentation/VariableDoc";
+import UnknownDoc from "./models/documentation/UnknownDoc";
 
 /**
  * The TSDocGen Application. Handles traversing source files and converting them to
  * a documentation ready app.
  */
+@EmitEvent('START_PROJECT')
 class TSDocGen {
+    // Private Methods
+
     /** The project config {@link Config} */
     private config: Config = new Config();
+
+    private buildDocs = (node: Node) => {
+        const kind = node.getKind();
+
+        switch (kind) {
+            case SyntaxKind.ClassDeclaration:
+                return new ClassDoc(node as ClassDeclaration);
+            case SyntaxKind.FunctionDeclaration:
+                return new FunctionDoc(node as FunctionDeclaration);
+            case SyntaxKind.TypeAliasDeclaration:
+                return new TypeAliasDoc(node as TypeAliasDeclaration);
+            case SyntaxKind.InterfaceDeclaration:
+                return new InterfaceDoc(node as InterfaceDeclaration);
+            case SyntaxKind.EnumDeclaration:
+                return new EnumDoc(node as EnumDeclaration);
+            case SyntaxKind.VariableDeclaration:
+                return new VariableDoc(node as VariableDeclaration);
+            default:
+                return new UnknownDoc(node);
+        }
+    }
 
     private getDeclarations = (tsProject: Project, project: TSDocGenProject): ReadonlyMap<string, ExportedDeclarations[]>[] => {
         if (project.exportedDeclarationsOnly) {
@@ -31,6 +62,17 @@ class TSDocGen {
         }
     }
 
+    private recursivelyBuildTree = (rootDirectories: Directory[], map: {} = {}): any => {
+        return rootDirectories.reduce((currentMap, rootDirectory) => {
+            const name = rootDirectory.getBaseName();
+
+            return {
+                ...currentMap,
+                [name]: {},
+            }
+        }, map);
+    }
+
     /**
      * Builds an AST tree for a given typescript project.
      * @param project A project config
@@ -41,24 +83,29 @@ class TSDocGen {
             tsConfigFilePath: project.tsConfigFilePath,
         });
 
-        const { name: projectName = project.projectName} = project.packageJson;
+        const { name: projectName = project.projectName } = project.packageJson;
+
+        const rootDirectories = tsProject.getRootDirectories();
+
+        console.log(this.recursivelyBuildTree(rootDirectories));
 
         if (!projectName) {
             throw new ProjectNameNotConfiguredError(project.tsConfigFilePath);
         }
-        
+
         const exportedDeclarations = this.getDeclarations(tsProject, project);
 
         const tree = [];
 
         for (const exportedDeclarationsMap of exportedDeclarations) {
             for (const [name, declarations] of exportedDeclarationsMap) {
-                const ast = declarations.map(buildAST);
+                const ast = declarations.map(this.buildDocs);
 
-                // console.dir(ast[0].declarations[0])
                 tree.push({ name, ast: ast });
             }
         }
+
+        console.log(tree);
 
         return [projectName, tree];
     }

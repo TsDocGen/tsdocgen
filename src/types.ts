@@ -9,15 +9,6 @@ import {
   TypeAliasDeclaration,
   VariableDeclaration,
 } from "typescript";
-import { 
-  ClassAstBuilder, 
-  FunctionAstBuilder, 
-  TypeAstBuilder, 
-  InterfaceAstBuilder, 
-  EnumAstBuilder, 
-  VariableAstBuilder, 
-  UnknownAstBuilder 
-} from "./ast";
 
 export type TSDocGenProject = {
   tsDocGenConfig: TSDocGenConfig;
@@ -82,8 +73,12 @@ export type Declaration =
   | VariableDeclaration
   | ModuleDeclaration;
 
-export type TSDocGenAST = (ClassAstBuilder | FunctionAstBuilder | TypeAstBuilder | InterfaceAstBuilder | EnumAstBuilder | VariableAstBuilder | UnknownAstBuilder)[];
+export type TsDocGenDoc = {
+  description: string;
+  tags: {
+    tagName: string;
+    text: string;
+  }[]
+};
 
-export enum SyntaxKind {
-
-}
+export type ClassType = { new (...args: any[]): {} };
