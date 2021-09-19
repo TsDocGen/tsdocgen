@@ -1,6 +1,5 @@
 export { default as ClassDoc } from './documentation/ClassDoc';
 export { default as Doc } from './documentation/Doc';
-export type { DocJSON } from './documentation/AbstractDoc';
 export { default as EnumDoc } from './documentation/EnumDoc';
 export { default as FunctionDoc } from './documentation/FunctionDoc';
 export { default as InterfaceDoc } from './documentation/InterfaceDoc';

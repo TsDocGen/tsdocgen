@@ -9,4 +9,6 @@ import "reflect-metadata";
 // export { default as getPackageJson } from './utils/getPackageJson'
 // export { default } from './tsdocgen';
 
-export { default as Doc } from './models/documentation/Doc';
+export type { DocJSON } from './types';
+
+// export { default as Doc } from './models/documentation/Doc';

@@ -1,15 +1,7 @@
 import { parse } from "comment-parser";
-import { JSDoc, Structure, Node, TypeFormatFlags } from "ts-morph";
-import { TsDocGenDoc } from "../../types";
+import { JSDoc, Structure, Node, TypeFormatFlags, SyntaxKind } from "ts-morph";
+import { DocJSON, TsDocGenDoc } from "../../types";
 import isNodeWithStructure from "../../utils/isNodeWithStructure";
-
-export interface DocJSON {
-    name: string;
-    jsDoc: {
-        description: string;
-        tags: TsDocGenDoc['tags'];
-    }
-};
 
 /**
  * The base representation for all documentation nodes.
@@ -36,7 +28,7 @@ class AbstractDoc<N extends Node, S extends Structure = Structure> {
     // Public Methods
 
     /** Returns a JSON representation of a doc. */
-    public toJSON(): DocJSON & Record<string, unknown> {
+    public toJSON(): DocJSON & Record<string, any> {
         return {
             name: this.name,
             jsDoc: {
@@ -46,14 +38,22 @@ class AbstractDoc<N extends Node, S extends Structure = Structure> {
         }
     }
 
+    /** Traverses a doc and its' children */
     public traverse() {
         // should be implemented by each class as needed.
     }
 
+    /** Gets the return type of the doc as a string. */
     public getReturnType() {
         if (Node.isReturnTypedNode(this.node)) {
-            return this.node.getReturnType().getText(this.node, TypeFormatFlags.UseAliasDefinedOutsideCurrentScope)
+            return this.node.getReturnType().getText(this.node, TypeFormatFlags.UseAliasDefinedOutsideCurrentScope);
         }
+
+        if (Node.isInitializerExpressionGetableNode(this.node)) {
+            const arrow = this.node.getInitializerIfKind(SyntaxKind.ArrowFunction);
+            return arrow?.getReturnType().getText(this.node, TypeFormatFlags.UseAliasDefinedOutsideCurrentScope) ?? '';
+        }
+
         return '';
     }
     
@@ -62,14 +62,16 @@ class AbstractDoc<N extends Node, S extends Structure = Structure> {
         return this.name;
     }
 
-    // Private Methods
+    // Protected
 
-    private getJSDocs = () => {
+    protected getJSDocs = () => {
         if (Node.isJSDocableNode(this.node)) {
             return this.node.getJsDocs();
         }
         return [];
     }
+
+    // Private Methods
 
     private getStructure = () => {
         if (isNodeWithStructure<S>(this.node)) {

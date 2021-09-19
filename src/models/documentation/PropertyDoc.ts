@@ -9,6 +9,11 @@ class PropertyDoc extends AbstractDoc<
     > {
     constructor(node: PropertyDeclaration | PropertySignature) {
         super(node);
+
+        // if (Node.isTypeNode(this.node)) {
+        //     this.node.getProp
+        // }
+        console.log(this.node.getChildren())
     }
 
     public override toJSON() {

@@ -18,8 +18,6 @@ class ClassDoc extends Doc<ClassDeclaration, ClassDeclarationStructure> {
         this.instanceMethods = this.getInstanceMethods();
         this.staticMethods = this.getStaticMethods();
         this.extends = this.node.getBaseClass()?.getName();
-
-        console.log(this.toJSON());
     } 
 
     private getStaticMethods = () => {
@@ -39,7 +37,6 @@ class ClassDoc extends Doc<ClassDeclaration, ClassDeclarationStructure> {
             ...super.toJSON(),
             extends: this.extends,
             isAbstract: this.isAbstract,
-            properties: this.properties.map((property) => property.toJSON()),
             instanceMethods: this.instanceMethods.map((instanceMethod) => instanceMethod.toJSON()),
             staticMethods: this.staticMethods.map((staticMethod) => staticMethod.toJSON()),
         }

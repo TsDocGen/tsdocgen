@@ -10,6 +10,14 @@ import {
   VariableDeclaration,
 } from "typescript";
 
+export interface DocJSON {
+  name: string;
+  jsDoc: {
+      description: string;
+      tags: TsDocGenDoc['tags'];
+  }
+};
+
 export type TSDocGenProject = {
   tsDocGenConfig: TSDocGenConfig;
   tsConfig: TsConfig;

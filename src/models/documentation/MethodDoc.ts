@@ -1,17 +1,17 @@
-import { MethodDeclaration, MethodDeclarationStructure } from "ts-morph";
+import { MethodDeclaration, MethodDeclarationStructure, MethodSignature, MethodSignatureStructure, Node } from "ts-morph";
 import EmitDocEvent from "../../decorators/EmitDocEvent";
 import Doc from "./Doc";
 
 @EmitDocEvent('CREATE_METHOD_DOC')
-class MethodDoc extends Doc<MethodDeclaration, MethodDeclarationStructure> {
+class MethodDoc extends Doc<MethodDeclaration | MethodSignature, MethodDeclarationStructure | MethodSignatureStructure> {
     public isStatic: boolean;
     public scope: string;
 
-    constructor(node: MethodDeclaration) {
+    constructor(node: MethodDeclaration | MethodSignature) {
         super(node);
 
-        this.isStatic = node.isStatic();
-        this.scope = node.getScope();
+        this.isStatic = Node.isMethodDeclaration(node) ? node.isStatic(): false;
+        this.scope = Node.isMethodDeclaration(node) ? node.getScope() : '';
     }
 
     public override toString() {
@@ -19,14 +19,16 @@ class MethodDoc extends Doc<MethodDeclaration, MethodDeclarationStructure> {
     }
 
     public override toJSON() {
-        return {
+        const base = {
             ...super.toJSON(),
             returnType: this.getReturnType(),
             isStatic: this.isStatic,
             hasQuestionToken: this.structure?.hasQuestionToken,
-            hasOverrideKeyword: this.structure?.hasOverrideKeyword,
             scope: this.scope,
         }
+
+        return base;
+        
     }
 }
 
