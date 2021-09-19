@@ -1,33 +1,20 @@
-import { Node, TypeAliasDeclaration } from "ts-morph";
-import { PropertyDoc } from "..";
+import { TypeAliasDeclaration, TypeAliasDeclarationStructure } from "ts-morph";
 import EmitDocEvent from "../../decorators/EmitDocEvent";
 import Doc from "./Doc";
 
 @EmitDocEvent('CREATE_TYPE_ALIAS_DOC')
-class TypeAliasDoc extends Doc<TypeAliasDeclaration> {
-
-    public properties: PropertyDoc[];
+class TypeAliasDoc extends Doc<TypeAliasDeclaration, TypeAliasDeclarationStructure> {
 
     constructor(node: TypeAliasDeclaration) {
         super(node);
 
-        this.properties = this.getProperties();
+        // console.log(this.node.getType().getConstructSignatures());
+        // this.node.getType().getCallSignatures()
+        // console.log(this.toJSON());
     }
 
-    public override toString = () => {
+    public override toString() {
         return '';
-    }
-
-    private getProperties = () => {
-        const type = this.node.getTypeNode();
-
-        if (Node.isTypeLiteralNode(type)) {
-            return type.getProperties().map((property) => {
-                return new PropertyDoc(property);
-            });
-        }
-
-        return []        
     }
 }
 

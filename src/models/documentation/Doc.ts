@@ -1,120 +1,108 @@
-import { parse } from "comment-parser";
-import { JSDoc, Node } from "ts-morph";
+import { Structure, Node } from "ts-morph";
 import EmitDocEvent from "../../decorators/EmitDocEvent";
-import { TsDocGenDoc } from "../../types";
+import AbstractDoc from "./AbstractDoc";
+import ParameterDoc from "./ParameterDoc";
+import PropertyDoc from "./PropertyDoc";
 import SignatureDoc from "./SignatureDoc";
-
-export interface DocJSON {
-    name: string;
-    jsDoc: {
-        description: string;
-        tags: TsDocGenDoc['tags'];
-    }
-};
+import TypeParameterDoc from "./TypeParameterDoc";
 
 /**
  * The base representation for all documentation nodes.
  */
 @EmitDocEvent('CREATE_DOC')
-class Doc<N extends Node> {
-    public description!: string;
-    public tags!: TsDocGenDoc['tags'];
-    public node: N;
-    public name: string;
-    public kind: string;
-    public signatures?: SignatureDoc[];
+class Doc<N extends Node, S extends Structure = Structure> extends AbstractDoc<N, S> {
+    public signatures: SignatureDoc[];
+    public typeParameters: TypeParameterDoc[];
+    public parameters: ParameterDoc[];
+    public properties: PropertyDoc[];
 
     constructor(node: N) {
-        // Variables
-        this.node = node;
-        this.name = this.getName();
-        this.kind = this.node.getKindName();
+        super(node);
 
-        // Effects
-        this.setDescriptionAndTags();
+        // Variables
+        this.signatures = this.getSignatures();
+        this.typeParameters = this.getTypeParameters();
+        this.parameters = this.getParameters();
+        this.properties = this.getProperties();
     }
 
     // Public Methods
+    public override toJSON() {
+        return {
+            ...super.toJSON(),
+            signatures: this.signatures.map((signature) => signature.toJSON()),
+            typeParameters: this.typeParameters.map((typeParameter) => typeParameter.toJSON()),
+            parameters: this.parameters.map((parameter) => parameter.toJSON()),
+            properties: this.properties.map((property) => property.toJSON()),
+        }
+    }
 
-    public getJSDocs = () => {
-        if (Node.isJSDocableNode(this.node)) {
-            return this.node.getJsDocs();
+    // Protected Methods
+
+    protected getProperties() {
+        if (Node.isTypedNode(this.node)) {
+            const type = this.node.getTypeNode();
+
+            if (Node.isTypeLiteralNode(type)) {
+                return type.getProperties().map((property) => {
+                    return new PropertyDoc(property)
+                });
+            }
+
+            return [];
+        }
+
+        if (Node.isTypeElementMemberedNode(this.node)) {
+            return this.node.getProperties().map((property) => {
+                return new PropertyDoc(property)
+            });
+        }
+
+        if (Node.isClassLikeDeclarationBase(this.node)) {
+            return this.node.getProperties().map((property) => {
+                return new PropertyDoc(property)
+            });
+        }
+
+        return [];
+    }
+
+    // Private Methods
+
+    private getParameters = () => {
+        if (Node.isParameteredNode(this.node)) {
+            return this.node.getParameters().map((parameter) => {
+                return new ParameterDoc(parameter)
+            });
         }
         return [];
     }
 
-    /** Returns a JSON representation of a doc. */
-    public toJSON = (): DocJSON & Record<string, unknown> => {
-        return {
-            name: this.name,
-            jsDoc: {
-                description: this.description,
-                tags: this.tags,
-            }
+    private getTypeParameters = () => {
+        if (Node.isTypeParameteredNode(this.node)) {
+            return this.node.getTypeParameters().map((typeParameter) => {
+                return new TypeParameterDoc(typeParameter)
+            });
         }
-    }
-
-    public traverse = () => {
-        // should be implemented by each class as needed.
-    }
-
-    /** Returns a string representation of a doc. */
-    public toString = (): string => {
-        return this.name;
-    }
-
-    // Private Methods
-    
-    private getName = () => {
-        if (Node.isNamedNode(this.node)) {
-            return this.node.getName();
-        }
-        else {
-            return this.node.getSymbol()?.getName() ?? "Unknown";
-        }
+        return [];
     }
 
     /**
-     * Parses the jsDocs description and tags. 
-     * 
-     * @param docs An array of JsDoc's
-     * @returns An array of TsDocGenDoc's
+     * Gets the call, index or construct signatures
      */
-    private formatJsDocs = (
-        docs: JSDoc[]
-    ): TsDocGenDoc[] => {
-        return docs.map((doc) => {
-            const text = doc.getFullText();
-            const parsedComments = parse(text);
-
-            return {
-                description: doc.getDescription(),
-                tags: parsedComments[0].tags.map((tag) => {
-                    return {
-                        tagName: tag.name,
-                        text: tag.description
-                    }
-                }),
-            };
-        });
-    };
-
-    /**
-     * Extracts the description and tags from the JsDoc associated with the node.
-     */
-    private setDescriptionAndTags = () => {
-        const doc = this.formatJsDocs(this.getJSDocs())[0];
-
-        if (doc) {
-            const { description, tags } = doc;
-
-            this.description = description;
-            this.tags = tags;
+    private getSignatures = () => {
+        if (Node.isTypeElementMemberedNode(this.node)) {
+            const signatures = [
+                ...this.node.getCallSignatures(), 
+                ...this.node.getIndexSignatures(), 
+                ...this.node.getConstructSignatures()
+            ];
+            return signatures.map((signature) => {
+                return new SignatureDoc(signature);
+            });
         }
-        else {
-            this.description = '';
-            this.tags = [];
-        }
+
+        return [];
     }
 }
 

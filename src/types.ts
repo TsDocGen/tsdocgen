@@ -24,9 +24,10 @@ export type TSDocGenProject = {
  * The configration options for a TSDocGen project in {@link TSDocGenConfig}
  */
 export type TSDocGenProjectConfig = {
-  new(): void;
+  new (): void;
   /** a function */
   d: () => void;
+  get g (): string;
   /** 
    * The location of the tsconfig.json file relative to the current working directory. 
    */
@@ -85,3 +86,7 @@ export type TsDocGenDoc = {
 };
 
 export type ClassType = { new (...args: any[]): {} };
+
+export type Test<D extends string = string> = {
+  red: D;
+};

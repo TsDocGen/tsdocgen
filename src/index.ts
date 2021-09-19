@@ -1,6 +1,6 @@
 import "reflect-metadata";
 
-export type { TSDocGenProjectConfig } from './types';
+// export type { Test } from './types';
 
 // export * from './errors';
 // export * from './events';
@@ -9,4 +9,4 @@ export type { TSDocGenProjectConfig } from './types';
 // export { default as getPackageJson } from './utils/getPackageJson'
 // export { default } from './tsdocgen';
 
-// export { default as Doc } from './models/documentation/Doc';
+export { default as Doc } from './models/documentation/Doc';

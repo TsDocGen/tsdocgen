@@ -1,25 +1,26 @@
-import { ClassDeclaration } from "ts-morph";
+import { ClassDeclaration, ClassDeclarationStructure } from "ts-morph";
 import EmitDocEvent from "../../decorators/EmitDocEvent";
 import Doc from "./Doc";
 import MethodDoc from "./MethodDoc";
-import PropertyDoc from "./PropertyDoc";
 
 @EmitDocEvent('CREATE_CLASS_DOC')
-class ClassDoc extends Doc<ClassDeclaration> {
-    public properties: PropertyDoc[];
+class ClassDoc extends Doc<ClassDeclaration, ClassDeclarationStructure> {
     public instanceMethods: MethodDoc[];
     public staticMethods: MethodDoc[];
     public isAbstract: boolean;
+    public extends: string | undefined;
 
     constructor(node: ClassDeclaration) {
         super(node);
 
         // Variables
-        this.properties = this.getProperties();
         this.isAbstract = this.node.isAbstract();
         this.instanceMethods = this.getInstanceMethods();
         this.staticMethods = this.getStaticMethods();
-    }
+        this.extends = this.node.getBaseClass()?.getName();
+
+        console.log(this.toJSON());
+    } 
 
     private getStaticMethods = () => {
         return this.node.getStaticMethods().map((instanceMethod) => {
@@ -33,16 +34,14 @@ class ClassDoc extends Doc<ClassDeclaration> {
         });
     }
 
-    private getProperties = () => {
-        return this.node.getProperties().map((propertyDeclaration) => {
-            return new PropertyDoc(propertyDeclaration);
-        });
-    }
-
-    public override toJSON = () => {
+    public override toJSON() {
         return {
             ...super.toJSON(),
+            extends: this.extends,
+            isAbstract: this.isAbstract,
             properties: this.properties.map((property) => property.toJSON()),
+            instanceMethods: this.instanceMethods.map((instanceMethod) => instanceMethod.toJSON()),
+            staticMethods: this.staticMethods.map((staticMethod) => staticMethod.toJSON()),
         }
     }
 }

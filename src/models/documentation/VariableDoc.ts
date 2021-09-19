@@ -1,15 +1,15 @@
-import { VariableDeclaration } from "ts-morph";
+import { VariableDeclaration, VariableDeclarationStructure } from "ts-morph";
 import EmitDocEvent from "../../decorators/EmitDocEvent";
 import Doc from "./Doc";
 
 @EmitDocEvent('CREATE_VARIABLE_DOC')
-class VariableDoc extends Doc<VariableDeclaration> {
+class VariableDoc extends Doc<VariableDeclaration, VariableDeclarationStructure> {
 
     constructor(node: VariableDeclaration) {
         super(node);
     }
 
-    public override toString = () => {
+    public override toString() {
         return '';
     }
 }

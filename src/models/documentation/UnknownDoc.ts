@@ -9,7 +9,7 @@ class UnknownDoc extends Doc<Node> {
         super(node);
     }
 
-    public override toString = () => {
+    public override toString() {
         return '';
     }
 }
