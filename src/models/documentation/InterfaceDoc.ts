@@ -1,8 +1,7 @@
 import { InterfaceDeclaration, InterfaceDeclarationStructure, Node } from "ts-morph";
 import EmitDocEvent from "../../decorators/EmitDocEvent";
-import { DocJSON } from "../../types";
 import ClassDoc from "./ClassDoc";
-import Doc from "./Doc";
+import Doc, { DocJSON } from "./Doc";
 import MethodDoc from "./MethodDoc";
 import PropertyDoc from "./PropertyDoc";
 import TypeAliasDoc from "./TypeAliasDoc";
@@ -57,13 +56,13 @@ class InterfaceDoc extends Doc<InterfaceDeclaration, InterfaceDeclarationStructu
     private getProperties() {
         return this.node.getProperties().map((property) => {
             return new PropertyDoc(property);
-        })
+        });
     }
 
     private getMethods() {
         return this.node.getMethods().map((method) => {
             return new MethodDoc(method);
-        })
+        });
     }
 }
 

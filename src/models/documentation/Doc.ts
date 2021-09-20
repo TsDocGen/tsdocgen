@@ -4,12 +4,19 @@ import AddPropertiesDocs from "../../decorators/AddPropertiesDocs";
 import AddSignatureDocs from "../../decorators/AddSignatureDocs";
 import AddTypeParameterDocs from "../../decorators/AddTypeParameterDocs";
 import EmitDocEvent from "../../decorators/EmitDocEvent";
+import { AbstractDocJSON } from "../../types";
 import AbstractDoc from "./AbstractDoc";
 import ParameterDoc from "./ParameterDoc";
 import PropertyDoc from "./PropertyDoc";
 import SignatureDoc from "./SignatureDoc";
 import TypeParameterDoc from "./TypeParameterDoc";
 
+export interface DocJSON extends AbstractDocJSON {
+    signatures: ReturnType<SignatureDoc['toJSON']>;
+    typeParameters: ReturnType<TypeParameterDoc['toJSON']>;
+    parameters: ReturnType<ParameterDoc['toJSON']>;
+    properties: ReturnType<PropertyDoc['toJSON']>;
+}
 
 /**
  * The base representation for all documentation nodes.
@@ -27,6 +34,12 @@ class Doc<N extends Node, S extends Structure = Structure> extends AbstractDoc<N
     public typeParameters!: TypeParameterDoc[];
     public parameters!: ParameterDoc[];
     public properties!: PropertyDoc[];
+
+    public override toJSON(): DocJSON {
+        return {
+            ...super.toJSON(),
+        } as DocJSON;
+    }
 }
 
 export default Doc;

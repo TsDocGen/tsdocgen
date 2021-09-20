@@ -10,7 +10,7 @@ import {
   VariableDeclaration,
 } from "typescript";
 
-export interface DocJSON {
+export interface AbstractDocJSON {
   name: string;
   jsDoc: {
       description: string;

@@ -1,7 +1,12 @@
 {
     "compilerOptions": {
         "module": "CommonJS",
-        "lib": ["es2019", "es2020"],
+        "lib": [
+            "es2019", 
+            "es2020", 
+            "dom",
+            "dom.iterable"
+        ],
         "target": "ES2019",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
@@ -19,10 +24,10 @@
         "noImplicitOverride": true,
         "noPropertyAccessFromIndexSignature": true,
         "outDir": "dist",
-        "jsx": "react",
-        "jsxFactory": "JSX.createElement",
-        "jsxFragmentFactory": "JSX.Fragment",
+        "jsx": "react-jsx",
+        "jsxImportSource": "react",
         "allowSyntheticDefaultImports": true,
+        "moduleResolution": "node"
     },
     "include": ["src", "scripts"],
     "exclude": [

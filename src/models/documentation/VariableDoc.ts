@@ -17,9 +17,7 @@ class VariableDoc extends Doc<VariableDeclaration, VariableDeclarationStructure>
         this.values = this.getValues();
 
         this.statementStructure;
-
-        console.log(this.values);
-        // console.log(this.toJSON());
+        this.values;
     }
 
     public override toString() {

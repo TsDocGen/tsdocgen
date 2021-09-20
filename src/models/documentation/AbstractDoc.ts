@@ -1,6 +1,6 @@
 import { parse } from "comment-parser";
 import { JSDoc, Structure, Node, TypeFormatFlags, SyntaxKind } from "ts-morph";
-import { DocJSON, TsDocGenDoc } from "../../types";
+import { AbstractDocJSON, TsDocGenDoc } from "../../types";
 import isNodeWithStructure from "../../utils/isNodeWithStructure";
 
 /**
@@ -28,7 +28,7 @@ class AbstractDoc<N extends Node, S extends Structure = Structure> {
     // Public Methods
 
     /** Returns a JSON representation of a doc. */
-    public toJSON(): DocJSON & Record<string, any> {
+    public toJSON(): AbstractDocJSON & Record<string, any> {
         return {
             name: this.name,
             jsDoc: {

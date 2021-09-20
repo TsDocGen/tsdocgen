@@ -3,6 +3,7 @@ import type { TsConfig, TSDocGenConfig, TSDocGenProject } from "../types";
 import { TsConfigNotFoundError, TsDocGenConfigNotFoundError } from "../errors";
 import { cosmiconfigSync } from 'cosmiconfig';
 import getPackageJson from "../utils/getPackageJson";
+import * as path from "path";
 
 const finder = cosmiconfigSync('tsdocgen');
 
@@ -17,6 +18,19 @@ class Config {
     this.tsDocGenConfig = this.getTsDocgenConfig();
     this.projects = this.getProjects();
   }
+
+  // Public Methods
+
+  /**
+   * Returns the output directory specified in the config.
+   */
+  public getOutputDir = () => {
+    const cwd = process.cwd();
+
+    return path.join(cwd, this.tsDocGenConfig.outDir);
+  }
+
+  // Private Methods
 
   /**
    * Finds the path tsconfig.json file for the project.

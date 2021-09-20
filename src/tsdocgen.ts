@@ -11,6 +11,16 @@ import EnumDoc from "./models/documentation/EnumDoc";
 import VariableDoc from "./models/documentation/VariableDoc";
 import UnknownDoc from "./models/documentation/UnknownDoc";
 
+type Doc = ClassDoc | FunctionDoc | TypeAliasDoc | InterfaceDoc | EnumDoc | VariableDoc | UnknownDoc;
+
+interface ProjectDocs {
+    name: string;
+    docs: Doc[]
+}
+
+interface TSDocGenResult {
+    [x: string]: ProjectDocs[];
+}
 /**
  * The TSDocGen Application. Handles traversing source files and converting them to
  * a documentation ready app.
@@ -20,7 +30,7 @@ class TSDocGen {
     // Private Methods
 
     /** The project config {@link Config} */
-    private config: Config = new Config();
+    public config: Config = new Config();
 
     private buildDocs = (node: Node) => {
         const kind = node.getKind();
@@ -78,7 +88,7 @@ class TSDocGen {
      * @param project A project config
      * @returns The project name and the tree.
      */
-    private buildProjectTree = (project: TSDocGenProject): [string, any] => {
+    private buildProjectTree = (project: TSDocGenProject): [string, ProjectDocs[]] => {
         const tsProject = new Project({
             tsConfigFilePath: project.tsConfigFilePath,
         });
@@ -91,17 +101,15 @@ class TSDocGen {
 
         const exportedDeclarations = this.getDeclarations(tsProject, project);
 
-        const tree = [];
+        const tree: ProjectDocs[] = [];
 
         for (const exportedDeclarationsMap of exportedDeclarations) {
             for (const [name, declarations] of exportedDeclarationsMap) {
-                const ast = declarations.map(this.buildDocs);
+                const docs = declarations.map(this.buildDocs);
 
-                tree.push({ name, ast: ast });
+                tree.push({ name, docs });
             }
         }
-
-        // console.log(tree);
 
         return [projectName, tree];
     }
@@ -111,13 +119,15 @@ class TSDocGen {
      */
     public generateDocumentation = async () => {
         const projects = this.config.projects;
-        const projectMap: Record<string, any> = {};
+        const projectMap: TSDocGenResult = {};
 
         for (const project of projects) {
-            const [name, tree] = this.buildProjectTree(project);
+            const [name, docs] = this.buildProjectTree(project);
 
-            projectMap[name] = tree;
+            projectMap[name] = docs;
         }
+
+        return projectMap;
     }
 }
 

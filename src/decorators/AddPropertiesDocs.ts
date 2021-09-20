@@ -27,7 +27,7 @@ function getProperties(node: Node) {
             return new PropertyDoc(property)
         });
     }
-
+    
     return [];
 }
 
