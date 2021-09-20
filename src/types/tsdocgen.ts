@@ -1,13 +1,6 @@
 import type { JSONSchemaForNPMPackageJsonFiles } from "@schemastore/package";
 import {
-  ClassDeclaration,
   CompilerOptions,
-  EnumDeclaration,
-  FunctionDeclaration,
-  InterfaceDeclaration,
-  ModuleDeclaration,
-  TypeAliasDeclaration,
-  VariableDeclaration,
 } from "typescript";
 
 export interface AbstractDocJSON {
@@ -75,15 +68,6 @@ export type TSDocGenConfig = {
 export type TsConfig = CompilerOptions & {
   tsdocgen?: TSDocGenConfig;
 };
-
-export type Declaration =
-  | ClassDeclaration
-  | InterfaceDeclaration
-  | TypeAliasDeclaration
-  | EnumDeclaration
-  | FunctionDeclaration
-  | VariableDeclaration
-  | ModuleDeclaration;
 
 export type TsDocGenDoc = {
   description: string;

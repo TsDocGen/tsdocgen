@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { Node } from "ts-morph";
 import PropertyDoc from "../models/documentation/PropertyDoc";
-import { ClassType } from "../types";
+import { ClassType } from "../types/tsdocgen";
 
 function getProperties(node: Node) {
     if (Node.isTypedNode(node)) {

@@ -1,6 +1,6 @@
 import { parse } from "comment-parser";
 import { JSDoc, Structure, Node, TypeFormatFlags, SyntaxKind } from "ts-morph";
-import { AbstractDocJSON, TsDocGenDoc } from "../../types";
+import { AbstractDocJSON, TsDocGenDoc } from "../../types/tsdocgen";
 import isNodeWithStructure from "../../utils/isNodeWithStructure";
 
 /**

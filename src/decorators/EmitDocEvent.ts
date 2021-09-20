@@ -1,5 +1,5 @@
 import { eventEmitter, DocEvents } from "../events";
-import { ClassType } from "../types";
+import { ClassType } from "../types/tsdocgen";
 
 /**
  * A decorator for emitting events related to the creation {@link Doc}.

@@ -6,7 +6,8 @@ const config = {
         tsConfig: 'tsconfig.json',
         packageJson: 'package.json',
         exportedDeclarationsOnly: true,
-        readme: 'README.md'
+        readme: 'README.md',
+        theme: 'ant-design'
     }]
 };
 

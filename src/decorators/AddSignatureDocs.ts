@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { Node } from "ts-morph";
 import SignatureDoc from "../models/documentation/SignatureDoc";
-import { ClassType } from "../types";
+import { ClassType } from "../types/tsdocgen";
 
 /**
  * Gets the call, index or construct signatures

@@ -1,5 +1,5 @@
 import { eventEmitter, ProjectEvents, ThemeEvents } from "../events";
-import { ClassType } from "../types";
+import { ClassType } from "../types/tsdocgen";
 
 /**
  * A decorator for emitting events related to the project lifecyle or theme lifecycle.

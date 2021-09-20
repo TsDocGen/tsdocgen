@@ -1,6 +1,6 @@
 import Config from "./models/Config";
 import { ClassDeclaration, EnumDeclaration, ExportedDeclarations, FunctionDeclaration, InterfaceDeclaration, Node, Project, SyntaxKind, TypeAliasDeclaration, VariableDeclaration } from "ts-morph";
-import { TSDocGenProject } from "./types";
+import { TSDocGenProject } from "./types/tsdocgen";
 import { ProjectNameNotConfiguredError } from "./errors";
 import ClassDoc from "./models/documentation/ClassDoc";
 import EmitEvent from "./decorators/EmitEvent";

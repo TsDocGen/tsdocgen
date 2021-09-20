@@ -4,7 +4,7 @@ import AddPropertiesDocs from "../../decorators/AddPropertiesDocs";
 import AddSignatureDocs from "../../decorators/AddSignatureDocs";
 import AddTypeParameterDocs from "../../decorators/AddTypeParameterDocs";
 import EmitDocEvent from "../../decorators/EmitDocEvent";
-import { AbstractDocJSON } from "../../types";
+import { AbstractDocJSON } from "../../types/tsdocgen";
 import AbstractDoc from "./AbstractDoc";
 import ParameterDoc from "./ParameterDoc";
 import PropertyDoc from "./PropertyDoc";

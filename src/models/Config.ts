@@ -1,5 +1,5 @@
 import { findConfigFile, readConfigFile, sys } from "typescript";
-import type { TsConfig, TSDocGenConfig, TSDocGenProject } from "../types";
+import type { TsConfig, TSDocGenConfig, TSDocGenProject } from "../types/tsdocgen";
 import { TsConfigNotFoundError, TsDocGenConfigNotFoundError } from "../errors";
 import { cosmiconfigSync } from 'cosmiconfig';
 import getPackageJson from "../utils/getPackageJson";
