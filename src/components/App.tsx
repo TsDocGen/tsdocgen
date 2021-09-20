@@ -1,27 +1,14 @@
-import ClassDoc from "../models/documentation/ClassDoc";
-import EnumDoc from "../models/documentation/EnumDoc";
-import FunctionDoc from "../models/documentation/FunctionDoc";
-import InterfaceDoc from "../models/documentation/InterfaceDoc";
-import TypeAliasDoc from "../models/documentation/TypeAliasDoc";
-import UnknownDoc from "../models/documentation/UnknownDoc";
-import VariableDoc from "../models/documentation/VariableDoc";
-
-type Doc = ClassDoc | FunctionDoc | TypeAliasDoc | InterfaceDoc | EnumDoc | VariableDoc | UnknownDoc;
-
-interface ProjectDocs {
-    name: string;
-    docs: Doc[]
-}
+import { ProjectDocs } from "../types/docs";
 
 type AppProps = {
     name: string;
     docs: ProjectDocs[]
 }
 
-function App({ docs }: AppProps) {
+function App({ docs, name }: AppProps) {
     return (
         <div>
-            <div>Hey!</div>
+            <h1>{name}</h1>
             {docs.map((doc) => {
                 return (
                     <div key={doc.name}>

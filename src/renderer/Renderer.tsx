@@ -2,8 +2,9 @@ import * as ReactDOMServer from "react-dom/server";
 import { Helmet, HelmetData } from 'react-helmet';
 import * as fs from 'fs';
 import * as path from 'path';
-import { ProjectDocs } from "../types/docs";
+import { DocUnion, ProjectDocs } from "../types/docs";
 import { ThemeProps } from "../types/theme";
+import RendererProvider from "./RendererProvider";
 
 export interface RenderOptions {
     helmet?: HelmetData;
@@ -15,15 +16,23 @@ export interface RenderOptions {
 }
 
 class Renderer {
-    renderProject({ 
-        helmet = Helmet.renderStatic(), 
-        Theme, 
-        outDir, 
-        projectName, 
-        projectDir, 
-        docs 
+    public getUrlForDoc(doc: DocUnion) {
+        console.log(doc);
+    }
+
+    public renderProject({
+        helmet = Helmet.renderStatic(),
+        Theme,
+        outDir,
+        projectName,
+        projectDir,
+        docs
     }: RenderOptions) {
-        const html = ReactDOMServer.renderToStaticMarkup(<Theme helmet={helmet} projectName={projectName} docs={docs} />);
+        const html = ReactDOMServer.renderToStaticMarkup(
+            <RendererProvider renderer={this}>
+                <Theme helmet={helmet} projectName={projectName} docs={docs} />
+            </RendererProvider>
+        );
 
         if (!fs.existsSync(outDir)) {
             fs.mkdirSync(outDir);

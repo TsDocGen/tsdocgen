@@ -29,12 +29,31 @@ interface TSDocGenResult {
  */
 @EmitEvent('START_PROJECT')
 class TSDocGen {
-    // Private Methods
 
     /** The project config {@link Config} */
     public config: Config = new Config();
     /** The HTML Renderer */
     public renderer: Renderer = new Renderer();
+
+    // Public Methods
+
+    /**
+     * Generates the documentation using the configuration options.
+     */
+     public generateDocumentation = async () => {
+        const projects = this.config.projects;
+        const projectMap: TSDocGenResult = {};
+
+        for (const project of projects) {
+            const [name, docs] = this.buildProjectTree(project);
+
+            projectMap[name] = docs;
+        }
+
+        this.outputProject(projectMap);
+    }
+
+    // Private Methods
 
     private buildDocs = (node: Node) => {
         const kind = node.getKind();
@@ -134,22 +153,6 @@ class TSDocGen {
         }
 
         return [projectName, tree];
-    }
-
-    /**
-     * Generates the documentation using the configuration options.
-     */
-    public generateDocumentation = async () => {
-        const projects = this.config.projects;
-        const projectMap: TSDocGenResult = {};
-
-        for (const project of projects) {
-            const [name, docs] = this.buildProjectTree(project);
-
-            projectMap[name] = docs;
-        }
-
-        this.outputProject(projectMap);
     }
 }
 
