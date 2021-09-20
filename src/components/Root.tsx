@@ -1,11 +1,9 @@
-import { HelmetData } from 'react-helmet';
+import { ThemeProps } from '../types/theme';
+import App from './App';
 
-type HTMLProps = {
-    helmet: HelmetData;
-    children: React.ReactNode;
-}
+type RootProps = ThemeProps
 
-function HTML({ helmet, children }: HTMLProps) {
+const Root: React.FC<RootProps> = ({ helmet, docs, projectName }) => {
     const htmlAttrs = helmet.htmlAttributes.toComponent();
     const bodyAttrs = helmet.bodyAttributes.toComponent();
 
@@ -17,10 +15,10 @@ function HTML({ helmet, children }: HTMLProps) {
                 {helmet.link.toComponent()}
             </head>
             <body {...bodyAttrs}>
-                {children}
+                <App docs={docs} name={projectName} />
             </body>
         </html>
     );
 }
 
-export default HTML;
+export default Root;

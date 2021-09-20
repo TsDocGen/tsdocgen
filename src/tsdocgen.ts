@@ -10,6 +10,8 @@ import InterfaceDoc from "./models/documentation/InterfaceDoc";
 import EnumDoc from "./models/documentation/EnumDoc";
 import VariableDoc from "./models/documentation/VariableDoc";
 import UnknownDoc from "./models/documentation/UnknownDoc";
+import Renderer from "./renderer";
+import Root from "./components/Root";
 
 type Doc = ClassDoc | FunctionDoc | TypeAliasDoc | InterfaceDoc | EnumDoc | VariableDoc | UnknownDoc;
 
@@ -31,6 +33,8 @@ class TSDocGen {
 
     /** The project config {@link Config} */
     public config: Config = new Config();
+    /** The HTML Renderer */
+    public renderer: Renderer = new Renderer();
 
     private buildDocs = (node: Node) => {
         const kind = node.getKind();
@@ -72,16 +76,34 @@ class TSDocGen {
         }
     }
 
-    // private recursivelyBuildTree = (rootDirectories: Directory[], map: {} = {}): any => {
-    //     return rootDirectories.reduce((currentMap, rootDirectory) => {
-    //         const name = rootDirectory.getBaseName();
+    private outputProject = (result: TSDocGenResult) => {
+        const projects = Object.keys(result);
 
-    //         return {
-    //             ...currentMap,
-    //             [name]: {},
-    //         }
-    //     }, map);
-    // }
+        if (projects.length === 1) {
+            const docs = result[projects[0]];
+
+            this.renderer.renderProject({
+                Theme: Root,
+                projectDir: '.',
+                outDir: this.config.getOutputDir(),
+                docs: docs,
+                projectName: projects[0],
+            });
+        }
+        else {
+            for (const projectName of projects) {
+                const docs = result[projectName];
+        
+                this.renderer.renderProject({
+                    Theme: Root,
+                    projectDir: projectName,
+                    outDir: this.config.getOutputDir(),
+                    docs,
+                    projectName,
+                });
+            }
+        }
+    }
 
     /**
      * Builds an AST tree for a given typescript project.
@@ -127,7 +149,7 @@ class TSDocGen {
             projectMap[name] = docs;
         }
 
-        return projectMap;
+        this.outputProject(projectMap);
     }
 }
 
