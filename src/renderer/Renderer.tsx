@@ -5,6 +5,7 @@ import * as path from 'path';
 import { DocUnion, ProjectDocs } from "../types/docs";
 import { ThemeProps } from "../types/theme";
 import RendererProvider from "./RendererProvider";
+import * as DefaultTheme from 'tsdocgen-themes';
 
 export interface RenderOptions {
     helmet?: HelmetData;
