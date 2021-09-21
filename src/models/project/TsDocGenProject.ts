@@ -15,6 +15,7 @@ class TsDocGenProject {
     public config: TSDocGenProjectProps;
     private tsProject: Project;
     public sourceFileDeclarationsMap: SourceFileDeclarationMap;
+    public name: string;
 
     constructor(config: TSDocGenProjectProps) {
         this.config = config;
@@ -22,6 +23,7 @@ class TsDocGenProject {
             tsConfigFilePath: this.config.tsConfigFilePath,
         });
         this.sourceFileDeclarationsMap = this.createProject();
+        this.name = this.config.projectName || this.config.packageJson.name || 'project';
     }
 
     public toJSON(): TsDocGenProjectJSON {
