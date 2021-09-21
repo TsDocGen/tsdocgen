@@ -14,6 +14,7 @@ class AbstractDoc<T extends string, N extends Node, S extends Structure = Struct
     public kind: string;
     public structure: S | null;
     public type: T;
+    public isDefaultExport: boolean;
 
     constructor(node: N, type: T) {
         // Variables
@@ -22,6 +23,7 @@ class AbstractDoc<T extends string, N extends Node, S extends Structure = Struct
         this.kind = this.node.getKindName();
         this.structure = this.getStructure();
         this.type = type;
+        this.isDefaultExport = this.getIsDefaultExport();
 
         // Effects
         this.setDescriptionAndTags();
@@ -34,6 +36,7 @@ class AbstractDoc<T extends string, N extends Node, S extends Structure = Struct
         return {
             type: this.type,
             name: this.name,
+            isDefaultExport: this.isDefaultExport,
             jsDoc: {
                 description: this.description,
                 tags: this.tags,
@@ -75,6 +78,13 @@ class AbstractDoc<T extends string, N extends Node, S extends Structure = Struct
     }
 
     // Private Methods
+
+    private getIsDefaultExport = () => {
+        if (Node.isExportableNode(this.node)) {
+            return this.node.isDefaultExport();
+        }
+        return false;
+    }
 
     private getStructure = () => {
         if (isNodeWithStructure<S>(this.node)) {

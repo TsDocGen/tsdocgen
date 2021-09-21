@@ -1,5 +1,6 @@
 import { InterfaceDeclaration, InterfaceDeclarationStructure, Node } from "ts-morph";
 import EmitDocEvent from "../../decorators/EmitDocEvent";
+import notEmpty from "../../utils/notEmpty";
 import ClassDoc from "./ClassDoc";
 import Doc, { DocJSON } from "./Doc";
 import MethodDoc from "./MethodDoc";
@@ -39,7 +40,6 @@ class InterfaceDoc extends Doc<"interface",InterfaceDeclaration, InterfaceDeclar
             ...super.toJSON(),
             extends: this.structure?.extends,
             hasDeclareKeyword: this.structure?.hasDeclareKeyword,
-            isDefaultExport: this.structure?.isDefaultExport,
             isExported: this.structure?.isExported,
             baseDeclarations: this.baseDeclarations.map((baseDeclaration) => baseDeclaration.toJSON()),
         }
@@ -49,8 +49,9 @@ class InterfaceDoc extends Doc<"interface",InterfaceDeclaration, InterfaceDeclar
         return this.node.getBaseDeclarations().map((declaration) => {
             if (Node.isTypeAliasDeclaration(declaration)) return new TypeAliasDoc(declaration);
             else if (Node.isClassDeclaration(declaration)) return new ClassDoc(declaration);
-            else return new InterfaceDoc(declaration);
-        });
+            else if (Node.isInterfaceDeclaration(declaration)) return new InterfaceDoc(declaration);
+            else return null
+        }).filter(notEmpty);
     }
 
     private getProperties() {

@@ -7,7 +7,6 @@ export interface FunctionDocJSON extends DocJSON<"function"> {
     isGenerator: boolean;
     returnType: string;
     overloads: FunctionDocJSON[],
-    isDefaultExport?: boolean;
     isExported?: boolean;
 }
 
@@ -33,7 +32,6 @@ class FunctionDoc extends Doc<"function",FunctionDeclaration, FunctionDeclaratio
             isGenerator: this.isGenerator,
             returnType: this.getReturnType(),
             overloads: this.overloads.map((overload) => overload.toJSON()),
-            isDefaultExport: this.structure?.isDefaultExport,
             isExported: this.structure?.isExported
         }
     }

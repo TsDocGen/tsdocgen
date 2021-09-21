@@ -1,11 +1,14 @@
 import type { JSONSchemaForNPMPackageJsonFiles } from "@schemastore/package";
+import { ExportedDeclarations, SourceFile } from "ts-morph";
 import {
   CompilerOptions,
 } from "typescript";
+import { DocUnion } from "./docs";
 
 export interface AbstractDocJSON<T extends string = string> {
   type: T;
   name: string;
+  isDefaultExport: boolean;
   jsDoc: {
       description: string;
       tags: TsDocGenDoc['tags'];
@@ -20,16 +23,13 @@ export type TSDocGenProject = {
   tsConfigFilePath: string;
   exportedDeclarationsOnly: boolean;
   projectName?: string;
+  rootDir: string;
 }
 
 /**
  * The configration options for a TSDocGen project in {@link TSDocGenConfig}
  */
 export type TSDocGenProjectConfig = {
-  new (): void;
-  /** a function */
-  d: () => void;
-  get g (): string;
   /** 
    * The location of the tsconfig.json file relative to the current working directory. 
    */
@@ -52,6 +52,10 @@ export type TSDocGenProjectConfig = {
    * default to the name in `package.json`.
    */
   projectName?: string;
+  /**
+   * The root directory for a project.
+   */
+  rootDir: string;
 }
 
 /** Configuration options for `tsdocgen.config.js`. */
@@ -80,6 +84,18 @@ export type TsDocGenDoc = {
 
 export type ClassType = { new (...args: any[]): {} };
 
-export type Test<D extends string = string> = {
-  red: D;
-};
+export interface SourceFileDeclarationMap extends Record<string, Record<string, DocUnion>> {
+
+}
+
+export interface TSDocGenResult {
+    [x: string]: SourceFileDeclarationMap;
+}
+
+export interface SourceFileDeclarations { 
+    path: string, 
+    sourceFile: SourceFile, 
+    exportedDeclarations: ReadonlyMap<string, ExportedDeclarations[]> 
+}
+
+export interface ProjectDeclarationsMap extends Record<string, SourceFileDeclarations> {};

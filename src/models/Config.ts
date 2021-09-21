@@ -89,6 +89,7 @@ class Config {
         entryPoint: project.entryPoint,
         exportedDeclarationsOnly: project.exportedDeclarationsOnly ?? true,
         projectName: project.projectName,
+        rootDir: project.rootDir
       }
     });
   }
