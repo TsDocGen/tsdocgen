@@ -1,4 +1,3 @@
-import "reflect-metadata";
 import { Node } from "ts-morph";
 import ParameterDoc from "../models/documentation/ParameterDoc";
 import { ClassType } from "../types/tsdocgen";

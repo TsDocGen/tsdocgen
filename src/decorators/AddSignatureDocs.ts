@@ -1,4 +1,3 @@
-import "reflect-metadata";
 import { Node } from "ts-morph";
 import SignatureDoc from "../models/documentation/SignatureDoc";
 import { ClassType } from "../types/tsdocgen";
