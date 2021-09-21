@@ -3,7 +3,8 @@ import {
   CompilerOptions,
 } from "typescript";
 
-export interface AbstractDocJSON {
+export interface AbstractDocJSON<T extends string = string> {
+  type: T;
   name: string;
   jsDoc: {
       description: string;

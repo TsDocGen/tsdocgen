@@ -3,10 +3,10 @@ import EmitDocEvent from "../../decorators/EmitDocEvent";
 import AbstractDoc from "./AbstractDoc";
 
 @EmitDocEvent('CREATE_PARAMETER_DOC')
-class ParameterDoc extends AbstractDoc<ParameterDeclaration, ParameterDeclarationStructure> {
+class ParameterDoc extends AbstractDoc<"parameter",ParameterDeclaration, ParameterDeclarationStructure> {
 
     constructor(node: ParameterDeclaration) {
-        super(node);
+        super(node, "parameter");
     }
 
     public override toJSON() {

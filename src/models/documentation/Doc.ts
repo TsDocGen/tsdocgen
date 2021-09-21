@@ -11,7 +11,7 @@ import PropertyDoc from "./PropertyDoc";
 import SignatureDoc from "./SignatureDoc";
 import TypeParameterDoc from "./TypeParameterDoc";
 
-export interface DocJSON extends AbstractDocJSON {
+export interface DocJSON<T extends string = string> extends AbstractDocJSON<T> {
     signatures: ReturnType<SignatureDoc['toJSON']>;
     typeParameters: ReturnType<TypeParameterDoc['toJSON']>;
     parameters: ReturnType<ParameterDoc['toJSON']>;
@@ -29,16 +29,16 @@ export interface DocJSON extends AbstractDocJSON {
 @AddParameterDocs
 @AddTypeParameterDocs
 @EmitDocEvent('CREATE_DOC')
-class Doc<N extends Node, S extends Structure = Structure> extends AbstractDoc<N, S> {
+class Doc<T extends string, N extends Node, S extends Structure = Structure> extends AbstractDoc<T, N, S> {
     public signatures!: SignatureDoc[];
     public typeParameters!: TypeParameterDoc[];
     public parameters!: ParameterDoc[];
     public properties!: PropertyDoc[];
 
-    public override toJSON(): DocJSON {
+    public override toJSON(): DocJSON<T> {
         return {
             ...super.toJSON(),
-        } as DocJSON;
+        } as DocJSON<T>;
     }
 }
 

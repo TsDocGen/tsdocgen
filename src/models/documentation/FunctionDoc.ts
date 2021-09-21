@@ -2,7 +2,7 @@ import { FunctionDeclaration, FunctionDeclarationStructure } from "ts-morph";
 import EmitDocEvent from "../../decorators/EmitDocEvent";
 import Doc, { DocJSON } from "./Doc";
 
-export interface FunctionDocJSON extends DocJSON {
+export interface FunctionDocJSON extends DocJSON<"function"> {
     isAsync: boolean;
     isGenerator: boolean;
     returnType: string;
@@ -12,14 +12,14 @@ export interface FunctionDocJSON extends DocJSON {
 }
 
 @EmitDocEvent('CREATE_FUNCTION_DOC')
-class FunctionDoc extends Doc<FunctionDeclaration, FunctionDeclarationStructure> {
+class FunctionDoc extends Doc<"function",FunctionDeclaration, FunctionDeclarationStructure> {
 
     public isAsync: boolean;
     public isGenerator: boolean;
     public overloads: FunctionDoc[];
 
     constructor(node: FunctionDeclaration) {
-        super(node);
+        super(node, "function");
 
         this.isAsync = this.node.isAsync();
         this.isGenerator = this.node.isGenerator();

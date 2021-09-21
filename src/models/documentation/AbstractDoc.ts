@@ -6,20 +6,22 @@ import isNodeWithStructure from "../../utils/isNodeWithStructure";
 /**
  * The base representation for all documentation nodes.
  */
-class AbstractDoc<N extends Node, S extends Structure = Structure> {
+class AbstractDoc<T extends string, N extends Node, S extends Structure = Structure> {
     public description!: string;
     public tags!: TsDocGenDoc['tags'];
     public node: N;
     public name: string;
     public kind: string;
     public structure: S | null;
+    public type: T;
 
-    constructor(node: N) {
+    constructor(node: N, type: T) {
         // Variables
         this.node = node;
         this.name = this.getName();
         this.kind = this.node.getKindName();
         this.structure = this.getStructure();
+        this.type = type;
 
         // Effects
         this.setDescriptionAndTags();
@@ -28,8 +30,9 @@ class AbstractDoc<N extends Node, S extends Structure = Structure> {
     // Public Methods
 
     /** Returns a JSON representation of a doc. */
-    public toJSON(): AbstractDocJSON & Record<string, any> {
+    public toJSON(): AbstractDocJSON<T> & Record<string, any> {
         return {
+            type: this.type,
             name: this.name,
             jsDoc: {
                 description: this.description,

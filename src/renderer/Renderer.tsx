@@ -2,10 +2,9 @@ import * as ReactDOMServer from "react-dom/server";
 import { Helmet, HelmetData } from 'react-helmet';
 import * as fs from 'fs';
 import * as path from 'path';
-import { DocUnion, ProjectDocs } from "../types/docs";
+import { ProjectDocs } from "../types/docs";
 import { ThemeProps } from "../types/theme";
 import RendererProvider from "./RendererProvider";
-import { AntDesignTheme } from 'tsdocgen-themes/dist';
 
 export interface RenderOptions {
     helmet?: HelmetData;
@@ -18,14 +17,6 @@ export interface RenderOptions {
 
 class Renderer {
     private themes: Map<string, React.FC<ThemeProps>> = new Map();
-
-    constructor() {
-        this.themes.set('ant-design', AntDesignTheme.Root);
-    }
-
-    public getUrlForDoc(doc: DocUnion) {
-        console.log(doc);
-    }
 
     public renderProject({
         helmet = Helmet.renderStatic(),

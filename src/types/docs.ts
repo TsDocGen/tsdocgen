@@ -8,6 +8,8 @@ import UnknownDoc from "./../models/documentation/UnknownDoc";
 
 export type DocUnion = ClassDoc | FunctionDoc | TypeAliasDoc | InterfaceDoc | EnumDoc | VariableDoc | UnknownDoc;
 
+export type DocUnionJSON = ReturnType<DocUnion['toJSON']>;
+
 export interface ProjectDocs {
     name: string;
     docs: DocUnion[]

@@ -3,10 +3,10 @@ import EmitDocEvent from "../../decorators/EmitDocEvent";
 import Doc from "./Doc";
 
 @EmitDocEvent('CREATE_ENUM_DOC')
-class EnumDoc extends Doc<EnumDeclaration, EnumDeclarationStructure> {
+class EnumDoc extends Doc<"enum",EnumDeclaration, EnumDeclarationStructure> {
 
     constructor(node: EnumDeclaration) {
-        super(node);
+        super(node, "enum");
     }
 
     public override toString() {

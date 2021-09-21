@@ -3,14 +3,14 @@ import EmitDocEvent from "../../decorators/EmitDocEvent";
 import Doc from "./Doc";
 
 @EmitDocEvent('CREATE_VARIABLE_DOC')
-class VariableDoc extends Doc<VariableDeclaration, VariableDeclarationStructure> {
+class VariableDoc extends Doc<"variable", VariableDeclaration, VariableDeclarationStructure> {
 
     private statement: VariableStatement | undefined;
     private statementStructure: VariableStatementStructure | undefined;
     private values: VariableDoc[];
 
     constructor(node: VariableDeclaration) {
-        super(node);
+        super(node, "variable");
 
         this.statement = this.node.getVariableStatement();
         this.statementStructure = this.statement?.getStructure();
@@ -28,7 +28,7 @@ class VariableDoc extends Doc<VariableDeclaration, VariableDeclarationStructure>
         return {
             ...super.toJSON(),
             hasExclamationToken: this.structure?.hasExclamationToken,
-            type: this.getReturnType(),
+            returnType: this.getReturnType(),
             isDefaultExport: this.node.isDefaultExport(),
             isExported: this.node.isExported(),
             exportKeyword: this.node.getExportKeyword()?.getText(),

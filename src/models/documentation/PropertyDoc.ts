@@ -4,17 +4,17 @@ import AbstractDoc from "./AbstractDoc";
 
 @EmitDocEvent('CREATE_PROPERTY_DOC')
 class PropertyDoc extends AbstractDoc<
+    "property",
     PropertyDeclaration | PropertySignature, 
     PropertyDeclarationStructure | PropertySignatureStructure
     > {
     constructor(node: PropertyDeclaration | PropertySignature) {
-        super(node);
+        super(node, "property");
     }
 
     public override toJSON() {
         return {
             ...super.toJSON(),
-            type: this.structure?.type,
             hasQuestionToken: this.structure?.hasQuestionToken,
             isReadonly: this.structure?.isReadonly,
             returnType: this.getReturnType(),

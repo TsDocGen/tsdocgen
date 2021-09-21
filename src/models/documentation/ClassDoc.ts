@@ -4,14 +4,14 @@ import Doc from "./Doc";
 import MethodDoc from "./MethodDoc";
 
 @EmitDocEvent('CREATE_CLASS_DOC')
-class ClassDoc extends Doc<ClassDeclaration, ClassDeclarationStructure> {
+class ClassDoc extends Doc<"class",ClassDeclaration, ClassDeclarationStructure> {
     public instanceMethods: MethodDoc[];
     public staticMethods: MethodDoc[];
     public isAbstract: boolean;
     public extends: string | undefined;
 
     constructor(node: ClassDeclaration) {
-        super(node);
+        super(node, "class");
 
         // Variables
         this.isAbstract = this.node.isAbstract();

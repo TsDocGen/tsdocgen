@@ -3,10 +3,10 @@ import EmitDocEvent from "../../decorators/EmitDocEvent";
 import Doc from "./Doc";
 
 @EmitDocEvent('CREATE_TYPE_ALIAS_DOC')
-class TypeAliasDoc extends Doc<TypeAliasDeclaration, TypeAliasDeclarationStructure> {
+class TypeAliasDoc extends Doc<"type-alias",TypeAliasDeclaration, TypeAliasDeclarationStructure> {
 
     constructor(node: TypeAliasDeclaration) {
-        super(node);
+        super(node, "type-alias");
 
         // console.log(this.node.getType().getConstructSignatures());
         // this.node.getType().getCallSignatures()

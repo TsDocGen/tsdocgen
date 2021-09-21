@@ -3,10 +3,10 @@ import EmitDocEvent from "../../decorators/EmitDocEvent";
 import AbstractDoc from "./AbstractDoc";
 
 @EmitDocEvent('CREATE_TYPE_PARAMETER_DOC')
-class TypeParameterDoc extends AbstractDoc<TypeParameterDeclaration, TypeParameterDeclarationStructure> {
+class TypeParameterDoc extends AbstractDoc<"type-parameter", TypeParameterDeclaration, TypeParameterDeclarationStructure> {
 
     constructor(node: TypeParameterDeclaration) {
-        super(node);
+        super(node, "type-parameter");
     }
 
     public override toJSON() {

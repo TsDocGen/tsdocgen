@@ -11,7 +11,6 @@ import EnumDoc from "./models/documentation/EnumDoc";
 import VariableDoc from "./models/documentation/VariableDoc";
 import UnknownDoc from "./models/documentation/UnknownDoc";
 import Renderer from "./renderer";
-import Root from "./components/Root";
 
 type Doc = ClassDoc | FunctionDoc | TypeAliasDoc | InterfaceDoc | EnumDoc | VariableDoc | UnknownDoc;
 
@@ -50,7 +49,7 @@ class TSDocGen {
             projectMap[name] = docs;
         }
 
-        this.outputProject(projectMap);
+        return projectMap;
     }
 
     // Private Methods
@@ -95,34 +94,34 @@ class TSDocGen {
         }
     }
 
-    private outputProject = (result: TSDocGenResult) => {
-        const projects = Object.keys(result);
+    // private outputProject = (result: TSDocGenResult) => {
+    //     const projects = Object.keys(result);
 
-        if (projects.length === 1) {
-            const docs = result[projects[0]];
+    //     if (projects.length === 1) {
+    //         const docs = result[projects[0]];
 
-            this.renderer.renderProject({
-                Theme: Root,
-                projectDir: '.',
-                outDir: this.config.getOutputDir(),
-                docs: docs,
-                projectName: projects[0],
-            });
-        }
-        else {
-            for (const projectName of projects) {
-                const docs = result[projectName];
+    //         this.renderer.renderProject({
+    //             Theme: Root,
+    //             projectDir: '.',
+    //             outDir: this.config.getOutputDir(),
+    //             docs: docs,
+    //             projectName: projects[0],
+    //         });
+    //     }
+    //     else {
+    //         for (const projectName of projects) {
+    //             const docs = result[projectName];
         
-                this.renderer.renderProject({
-                    Theme: Root,
-                    projectDir: projectName,
-                    outDir: this.config.getOutputDir(),
-                    docs,
-                    projectName,
-                });
-            }
-        }
-    }
+    //             this.renderer.renderProject({
+    //                 Theme: Root,
+    //                 projectDir: projectName,
+    //                 outDir: this.config.getOutputDir(),
+    //                 docs,
+    //                 projectName,
+    //             });
+    //         }
+    //     }
+    // }
 
     /**
      * Builds an AST tree for a given typescript project.

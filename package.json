@@ -6,18 +6,38 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "exec": "ts-node ./scripts/tsdocgen",
-    "build": "rm -rf dist && tsc -p tsconfig.json"
+    "build": "rm -rf dist && tsc -p tsconfig.json",
+    "build:gatsby": "gatsby build",
+    "gatsby:develop": "gatsby develop",
+    "gatsby:start": "gatsby develop",
+    "gatsby:build": "gatsby build",
+    "gatsby:serve": "gatsby serve",
+    "gatsby:clean": "gatsby clean"
   },
   "author": "Zerry Hogan",
   "license": "ISC",
   "devDependencies": {
+    "@mdx-js/mdx": "^1.6.22",
+    "@mdx-js/react": "^1.6.22",
     "@schemastore/package": "^0.0.6",
     "@types/glob": "^7.1.4",
     "@types/lodash": "^4.14.173",
     "@types/node": "^16.9.1",
     "@types/react-helmet": "^6.1.2",
+    "babel-plugin-styled-components": "^1.13.2",
+    "gatsby": "^3.13.1",
+    "gatsby-plugin-google-analytics": "^3.14.0",
+    "gatsby-plugin-manifest": "^3.14.0",
+    "gatsby-plugin-mdx": "^2.14.0",
+    "gatsby-plugin-react-helmet": "^4.14.0",
+    "gatsby-plugin-sitemap": "^4.10.0",
+    "gatsby-plugin-styled-components": "^4.14.0",
+    "gatsby-source-filesystem": "^3.14.0",
+    "install-peers": "^1.0.3",
     "reflect-metadata": "^0.1.13",
-    "ts-node": "^10.2.1"
+    "styled-components": "^5.3.1",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.3"
   },
   "dependencies": {
     "@types/react": "^17.0.21",
@@ -31,8 +51,19 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-helmet": "^6.1.0",
-    "ts-morph": "^12.0.0",
-    "tsdocgen-themes": "https://github.com/TsDocGen/tsdocgen-themes.git",
-    "typescript": "^4.4.3"
+    "ts-morph": "^12.0.0"
+  },
+  "peerDependencies": {
+    "@mdx-js/mdx": "1.x",
+    "@mdx-js/react": "1.x",
+    "gatsby": "3.x",
+    "gatsby-plugin-google-analytics": "^.x",
+    "gatsby-plugin-manifest": "3.x",
+    "gatsby-plugin-mdx": "2.x",
+    "gatsby-plugin-react-helmet": "4.x",
+    "gatsby-plugin-sitemap": "4.x",
+    "gatsby-plugin-styled-components": "4.x",
+    "gatsby-source-filesystem": "3.x",
+    "styled-components": "5.x"
   }
 }

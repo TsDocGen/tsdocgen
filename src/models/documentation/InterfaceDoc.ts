@@ -8,19 +8,19 @@ import TypeAliasDoc from "./TypeAliasDoc";
 
 type BaseDeclarationsToJSON = ReturnType<InterfaceDoc['toJSON']> | ReturnType<TypeAliasDoc['toJSON']> | ReturnType<ClassDoc['toJSON']>;
 
-type InterfaceDocJSON = DocJSON & {
+type InterfaceDocJSON = DocJSON<"interface"> & {
     extends: InterfaceDeclarationStructure['extends'],
     baseDeclarations: BaseDeclarationsToJSON[]
 } & Pick<InterfaceDeclarationStructure, 'extends' | 'isDefaultExport' | 'isExported' | 'hasDeclareKeyword'>
 
 @EmitDocEvent('CREATE_INTERFACE_DOC')
-class InterfaceDoc extends Doc<InterfaceDeclaration, InterfaceDeclarationStructure> {
+class InterfaceDoc extends Doc<"interface",InterfaceDeclaration, InterfaceDeclarationStructure> {
 
     private baseDeclarations: (InterfaceDoc | TypeAliasDoc | ClassDoc)[];
     public methods: MethodDoc[];
 
     constructor(node: InterfaceDeclaration) {
-        super(node);
+        super(node, "interface");
 
         this.baseDeclarations = this.getBaseDeclarations();
         this.properties = this.getProperties();

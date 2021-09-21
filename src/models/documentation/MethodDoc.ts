@@ -3,12 +3,12 @@ import EmitDocEvent from "../../decorators/EmitDocEvent";
 import Doc from "./Doc";
 
 @EmitDocEvent('CREATE_METHOD_DOC')
-class MethodDoc extends Doc<MethodDeclaration | MethodSignature, MethodDeclarationStructure | MethodSignatureStructure> {
+class MethodDoc extends Doc<"method", MethodDeclaration | MethodSignature, MethodDeclarationStructure | MethodSignatureStructure> {
     public isStatic: boolean;
     public scope: string;
 
     constructor(node: MethodDeclaration | MethodSignature) {
-        super(node);
+        super(node, "method");
 
         this.isStatic = Node.isMethodDeclaration(node) ? node.isStatic(): false;
         this.scope = Node.isMethodDeclaration(node) ? node.getScope() : '';
