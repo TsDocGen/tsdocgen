@@ -2,4 +2,8 @@ import TSDocGen from './../src/tsdocgen';
 
 const App = new TSDocGen();
 
-App.generateDocumentation();
+const projects = App.generateDocumentation();
+
+projects.forEach((project) => {
+    console.log(project.toJSON());
+})

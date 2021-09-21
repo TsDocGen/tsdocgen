@@ -1,8 +1,8 @@
 import { findConfigFile, readConfigFile, sys } from "typescript";
-import type { TsConfig, TSDocGenConfig, TSDocGenProject } from "../types/tsdocgen";
-import { TsConfigNotFoundError, TsDocGenConfigNotFoundError } from "../errors";
+import type { TsConfig, TSDocGenConfig, TSDocGenProjectProps } from "../../types/tsdocgen";
+import { TsConfigNotFoundError, TsDocGenConfigNotFoundError } from "../../errors";
 import { cosmiconfigSync } from 'cosmiconfig';
-import getPackageJson from "../utils/getPackageJson";
+import getPackageJson from "../../utils/getPackageJson";
 import * as path from "path";
 
 const finder = cosmiconfigSync('tsdocgen');
@@ -12,7 +12,7 @@ class Config {
   private tsDocGenConfig: TSDocGenConfig;
 
   /** The parsed projects defined in the {@link TSDocGenConfig}. */
-  public projects: TSDocGenProject[];
+  public projects: TSDocGenProjectProps[];
 
   constructor() {
     this.tsDocGenConfig = this.getTsDocgenConfig();
@@ -79,7 +79,7 @@ class Config {
     return configFile.config as TsConfig;
   };
 
-  private getProjects = (): TSDocGenProject[] => {
+  private getProjects = (): TSDocGenProjectProps[] => {
     return this.tsDocGenConfig.projects.map((project) => {
       return {
         tsDocGenConfig: this.tsDocGenConfig,

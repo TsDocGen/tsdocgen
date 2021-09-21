@@ -3,7 +3,7 @@ import { ExportedDeclarations, SourceFile } from "ts-morph";
 import {
   CompilerOptions,
 } from "typescript";
-import { DocUnion } from "./docs";
+import { DocUnion, DocUnionJSON } from "./docs";
 
 export interface AbstractDocJSON<T extends string = string> {
   type: T;
@@ -15,7 +15,7 @@ export interface AbstractDocJSON<T extends string = string> {
   }
 };
 
-export type TSDocGenProject = {
+export type TSDocGenProjectProps = {
   tsDocGenConfig: TSDocGenConfig;
   tsConfig: TsConfig;
   packageJson: JSONSchemaForNPMPackageJsonFiles;
@@ -99,3 +99,8 @@ export interface SourceFileDeclarations {
 }
 
 export interface ProjectDeclarationsMap extends Record<string, SourceFileDeclarations> {};
+
+export interface TsDocGenProjectJSON {
+  config: TSDocGenProjectProps;
+  sourceFileDeclarationsMap: Record<string, Record<string, DocUnionJSON>>;
+}

@@ -8,4 +8,4 @@ export { default as PropertyDoc } from './documentation/PropertyDoc';
 export { default as TypeAliasDoc } from './documentation/TypeAliasDoc';
 export { default as UnknownDoc } from './documentation/UnknownDoc';
 export { default as VariableDoc } from './documentation/VariableDoc';
-export { default as Config } from './Config';
+export { default as Config } from './configuration';
