@@ -5,7 +5,7 @@ import * as path from 'path';
 import { DocUnion, ProjectDocs } from "../types/docs";
 import { ThemeProps } from "../types/theme";
 import RendererProvider from "./RendererProvider";
-import * as DefaultTheme from 'tsdocgen-themes';
+import { AntDesignTheme } from 'tsdocgen-themes/dist';
 
 export interface RenderOptions {
     helmet?: HelmetData;
@@ -17,18 +17,29 @@ export interface RenderOptions {
 }
 
 class Renderer {
+    private themes: Map<string, React.FC<ThemeProps>> = new Map();
+
+    constructor() {
+        this.themes.set('ant-design', AntDesignTheme.Root);
+    }
+
     public getUrlForDoc(doc: DocUnion) {
         console.log(doc);
     }
 
     public renderProject({
         helmet = Helmet.renderStatic(),
-        Theme,
         outDir,
         projectName,
         projectDir,
         docs
     }: RenderOptions) {
+        const Theme = this.themes.get('ant-design');
+
+        if (!Theme) {
+            throw new Error();
+        }
+        
         const html = ReactDOMServer.renderToStaticMarkup(
             <RendererProvider renderer={this}>
                 <Theme helmet={helmet} projectName={projectName} docs={docs} />
