@@ -88,7 +88,7 @@ class TsDocGenProject {
          const theme = normalize(this.config.theme);
 
          if (DefaultThemes[theme]) {
-             return resolve(process.cwd(), 'node_modules', 'tsdocgen-themes', 'dist', theme);
+             return resolve(process.cwd(), 'node_modules', 'tsdocgen-themes', theme, 'dist');
          }
 
          return resolve(process.cwd(), 'node_modules', theme);
