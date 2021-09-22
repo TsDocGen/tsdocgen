@@ -3,7 +3,6 @@ import { Helmet, HelmetData } from 'react-helmet';
 import * as fs from 'fs';
 import * as path from 'path';
 import { ProjectDocs } from "../types/docs";
-import { ThemeProps } from "../types/theme";
 import RendererProvider from "./RendererProvider";
 
 export interface RenderOptions {
@@ -12,11 +11,11 @@ export interface RenderOptions {
     projectName: string;
     projectDir: string;
     docs: ProjectDocs[];
-    Theme: React.FC<ThemeProps>;
+    Theme: React.FC<any>;
 }
 
 class Renderer {
-    private themes: Map<string, React.FC<ThemeProps>> = new Map();
+    private themes: Map<string, React.FC<any>> = new Map();
 
     public renderProject({
         helmet = Helmet.renderStatic(),
