@@ -1,5 +1,6 @@
-import { join } from "path";
+import { join, resolve, normalize } from "path";
 import { ExportedDeclarations, Project, SourceFile, Node, SyntaxKind, TypeAliasDeclaration, ClassDeclaration, EnumDeclaration, FunctionDeclaration, InterfaceDeclaration, VariableDeclaration } from "ts-morph";
+import { DefaultThemes } from "../../constants";
 import { ProjectNameNotConfiguredError } from "../../errors";
 import { DocUnionJSON } from "../../types/docs";
 import { ProjectDeclarationsMap, SourceFileDeclarationMap, TsDocGenProjectJSON, TSDocGenProjectProps } from "../../types/tsdocgen";
@@ -67,7 +68,7 @@ class TsDocGenProject {
      * Executes a callback for each doc.
      * @param callback The callback too be called for each doc
      */
-    public forEachSourceDoc(callback: (doc: DocUnionJSON, config: TSDocGenProjectProps, sourceFile: Record<string, DocUnionJSON>, path: string) => void) {
+    public forEachDoc(callback: (doc: DocUnionJSON, config: TSDocGenProjectProps, sourceFile: Record<string, DocUnionJSON>, path: string) => void) {
         this.forEachSourceFile((sourceFile, config, path) => {
             for (const docName in sourceFile) {
                 if (Object.prototype.hasOwnProperty.call(sourceFile, docName)) {
@@ -77,6 +78,34 @@ class TsDocGenProject {
                 }
             }
         });
+    }
+
+    /**
+     * Resolves the path for a theme from node modules.
+     * @returns The full path to the theme relative to the current working directory.
+     */
+     public resolveThemePath(): string {
+         const theme = normalize(this.config.theme);
+
+         if (DefaultThemes[theme]) {
+             return resolve(process.cwd(), 'node_modules', 'tsdocgen-themes', 'dist', theme);
+         }
+
+         return resolve(process.cwd(), 'node_modules', theme);
+    }
+
+    /**
+     * Resolves the path for a theme from node modules.
+     * @returns The full path to the theme relative to the current working directory.
+     */
+     public getTheme(): string {
+        const theme = normalize(this.config.theme);
+
+        if (DefaultThemes[theme]) {
+            return resolve(process.cwd(), 'node_modules', 'tsdocgen-themes', 'dist', theme);
+        }
+
+        return resolve(process.cwd(), 'node_modules', theme);
     }
 
     /**

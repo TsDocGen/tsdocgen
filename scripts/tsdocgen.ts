@@ -5,7 +5,7 @@ const App = new TSDocGen();
 const projects = App.generateDocumentation();
 
 projects.forEach((project) => {
-    project.forEachSourceDoc((doc) => {
+    project.forEachDoc((doc) => {
         console.log(doc);
     });
-})
+});

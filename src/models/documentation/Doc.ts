@@ -12,10 +12,10 @@ import SignatureDoc from "./SignatureDoc";
 import TypeParameterDoc from "./TypeParameterDoc";
 
 export interface DocJSON<T extends string = string> extends AbstractDocJSON<T> {
-    signatures: ReturnType<SignatureDoc['toJSON']>;
-    typeParameters: ReturnType<TypeParameterDoc['toJSON']>;
-    parameters: ReturnType<ParameterDoc['toJSON']>;
-    properties: ReturnType<PropertyDoc['toJSON']>;
+    signatures: ReturnType<SignatureDoc['toJSON']>[];
+    typeParameters: ReturnType<TypeParameterDoc['toJSON']>[];
+    parameters: ReturnType<ParameterDoc['toJSON']>[];
+    properties: ReturnType<PropertyDoc['toJSON']>[];
 }
 
 /**

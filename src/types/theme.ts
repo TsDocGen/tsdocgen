@@ -1,16 +1,37 @@
-import { HelmetData } from 'react-helmet';
-import { DocUnion, ProjectDocs } from './docs';
-
-export interface ThemeProps { helmet: HelmetData; projectName: string; docs: ProjectDocs[] };
-
-/** Base component props for the `Page` component for a theme. */
-export interface PageComponentProps { doc: DocUnion };
+import React from 'react';
+import { DocUnionJSON, ProjectDocs } from './docs';
 
 /** Base component props for the `App` component for a theme. */
 export interface AppComponentProps {
     name: string;
-    docs: ProjectDocs[]
+    docs: ProjectDocs[];
 };
 
-/** Base component props for the `Root` component for a theme. */
-export interface RootComponentProps extends ThemeProps { };
+export interface LayoutProps {
+    docs: DocUnionJSON[]
+}
+
+export interface DocProps {
+    doc: DocUnionJSON;
+}
+
+export interface PageProps {
+    projectName: string;
+    doc: DocUnionJSON;
+}
+
+export interface PropertiesComponentProps {
+    properties: DocUnionJSON['properties'];
+}
+
+export interface PropertyComponentProps {
+    property: DocUnionJSON['properties'][0];
+}
+
+export interface TsDocGenTheme {
+    Doc: React.ComponentType<DocProps>;
+    Layout: React.ComponentType<LayoutProps>;
+    Page: React.ComponentType<PageProps>;
+    Properties: React.ComponentType<PropertiesComponentProps>;
+    Property: React.ComponentType<PropertyComponentProps>;
+}

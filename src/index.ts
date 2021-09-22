@@ -1,5 +1,6 @@
 export { default as App } from './components/App';
-export { default as ProjectProvider } from './components/ProjectProvider';
+export { default as ProjectProvider, useProject } from './components/ProjectProvider';
+export { default as NavigationProvider, useNavigation } from './components/NavigationProvider';
 export * from './errors';
 export * from './events';
 export * from './renderer';
