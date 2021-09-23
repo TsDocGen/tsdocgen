@@ -4,7 +4,6 @@ import AddPropertiesDocs from "../../decorators/AddPropertiesDocs";
 import AddSignatureDocs from "../../decorators/AddSignatureDocs";
 import AddTypeParameterDocs from "../../decorators/AddTypeParameterDocs";
 import EmitDocEvent from "../../decorators/EmitDocEvent";
-import { DocType } from "../../types/docs";
 import { AbstractDocJSON } from "../../types/tsdocgen";
 import AbstractDoc from "./AbstractDoc";
 import ParameterDoc from "./ParameterDoc";
@@ -12,7 +11,7 @@ import PropertyDoc from "./PropertyDoc";
 import SignatureDoc from "./SignatureDoc";
 import TypeParameterDoc from "./TypeParameterDoc";
 
-export interface DocJSON<T extends DocType = DocType> extends AbstractDocJSON<T> {
+export interface DocJSON<T extends string = string> extends AbstractDocJSON<T> {
     signatures: ReturnType<SignatureDoc['toJSON']>[];
     typeParameters: ReturnType<TypeParameterDoc['toJSON']>[];
     parameters: ReturnType<ParameterDoc['toJSON']>[];
@@ -31,7 +30,7 @@ export interface DocJSON<T extends DocType = DocType> extends AbstractDocJSON<T>
 @AddParameterDocs
 @AddTypeParameterDocs
 @EmitDocEvent('CREATE_DOC')
-class Doc<T extends DocType, N extends Node, S extends Structure = Structure> extends AbstractDoc<T, N, S> {
+class Doc<T extends string, N extends Node, S extends Structure = Structure> extends AbstractDoc<T, N, S> {
     public signatures!: SignatureDoc[];
     public typeParameters!: TypeParameterDoc[];
     public parameters!: ParameterDoc[];
