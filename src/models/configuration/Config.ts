@@ -5,8 +5,6 @@ import { cosmiconfigSync } from 'cosmiconfig';
 import getPackageJson from "../../utils/getPackageJson";
 import * as path from "path";
 
-const finder = cosmiconfigSync('tsdocgen');
-
 class Config {
   /** The {@link TSDocGenConfig} configation file.  */
   private tsDocGenConfig: TSDocGenConfig;
@@ -14,9 +12,12 @@ class Config {
   /** The parsed projects defined in the {@link TSDocGenConfig}. */
   public projects: TSDocGenProjectProps[];
 
+  private cosmiconfig: ReturnType<typeof cosmiconfigSync>;
+
   constructor() {
     this.tsDocGenConfig = this.getTsDocgenConfig();
     this.projects = this.getProjects();
+    this.cosmiconfig = cosmiconfigSync('tsdocgen');
   }
 
   // Public Methods
@@ -56,7 +57,7 @@ class Config {
   private getTsDocgenConfig = (): TSDocGenConfig => {
     const cwd = process.cwd();
 
-    const result = finder.search(cwd);
+    const result = this.cosmiconfig.search(cwd);
 
     if (result?.config) {
       return result.config;

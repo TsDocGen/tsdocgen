@@ -1,6 +1,6 @@
 import { join, resolve, normalize } from "path";
 import { ExportedDeclarations, Project, SourceFile, Node, SyntaxKind, TypeAliasDeclaration, ClassDeclaration, EnumDeclaration, FunctionDeclaration, InterfaceDeclaration, VariableDeclaration } from "ts-morph";
-import { DefaultThemes } from "../../constants";
+import { DefaultThemes, TypesFriendly } from "../../constants";
 import { ProjectNameNotConfiguredError } from "../../errors";
 import { DocUnionJSON } from "../../types/docs";
 import { ProjectDeclarationsMap, SourceFileDeclarationMap, TsDocGenProjectJSON, TSDocGenProjectProps } from "../../types/tsdocgen";
@@ -39,7 +39,7 @@ class TsDocGenProject {
         this.forEachDoc((doc) => {
             const { type, name } = doc;
 
-            menu[type] = {
+            menu[TypesFriendly[type]] = {
                 ...menu[type],
                 [name]: `/${this.name}/${type}/${name}`
             }

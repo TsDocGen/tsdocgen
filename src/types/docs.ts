@@ -10,6 +10,8 @@ export type DocUnion = ClassDoc | FunctionDoc | TypeAliasDoc | InterfaceDoc | En
 
 export type DocUnionJSON = ReturnType<DocUnion['toJSON']>;
 
+export type DocType = "function" | "class" | "type-alias" | "interface" | "enum" | "variable" | "unknown";
+
 export interface ProjectDocs {
     name: string;
     docs: DocUnion[]

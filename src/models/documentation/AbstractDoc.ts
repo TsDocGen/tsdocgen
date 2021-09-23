@@ -1,12 +1,13 @@
 import { parse } from "comment-parser";
 import { JSDoc, Structure, Node, TypeFormatFlags, SyntaxKind } from "ts-morph";
+import { DocType } from "../../types/docs";
 import { AbstractDocJSON, TsDocGenDoc } from "../../types/tsdocgen";
 import isNodeWithStructure from "../../utils/isNodeWithStructure";
 
 /**
  * The base representation for all documentation nodes.
  */
-class AbstractDoc<T extends string, N extends Node, S extends Structure = Structure> {
+class AbstractDoc<T extends DocType, N extends Node, S extends Structure = Structure> {
     public description!: string;
     public tags!: TsDocGenDoc['tags'];
     public node: N;
