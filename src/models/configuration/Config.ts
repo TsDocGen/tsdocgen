@@ -12,9 +12,10 @@ class Config {
   /** The parsed projects defined in the {@link TSDocGenConfig}. */
   public projects: TSDocGenProjectProps[];
 
-  private cosmiconfig: ReturnType<typeof cosmiconfigSync> = cosmiconfigSync('tsdocgen');
+  private cosmiconfig: ReturnType<typeof cosmiconfigSync>;
 
   constructor() {
+    this.cosmiconfig = cosmiconfigSync('tsdocgen');
     this.tsDocGenConfig = this.getTsDocgenConfig();
     this.projects = this.getProjects();
   }
