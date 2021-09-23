@@ -11,6 +11,12 @@ class TSDocGen {
 
     /** The project config {@link Config} */
     public config: Config = new Config();
+    /** An array of projects for the current app instance. */
+    public projects: TsDocGenProject[];
+
+    constructor() {
+        this.projects = this.generateDocumentation();
+    }
 
     // Public Methods
 

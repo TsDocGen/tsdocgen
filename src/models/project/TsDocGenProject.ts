@@ -17,6 +17,8 @@ class TsDocGenProject {
     private tsProject: Project;
     public sourceFileDeclarationsMap: SourceFileDeclarationMap;
     public name: string;
+    public json: TsDocGenProjectJSON;
+    public menu: Record<string, Record<string, string>>;
 
     constructor(config: TSDocGenProjectProps) {
         this.config = config;
@@ -25,6 +27,25 @@ class TsDocGenProject {
         });
         this.sourceFileDeclarationsMap = this.createProject();
         this.name = this.config.projectName || this.config.packageJson.name || 'project';
+        this.json = this.toJSON();
+        this.menu = this.buildMenu();
+    }
+
+    // Public Methods
+
+    public buildMenu() {
+        const menu: Record<string, Record<string, string>> = {};
+
+        this.forEachDoc((doc) => {
+            const { type, name } = doc;
+
+            menu[type] = {
+                ...menu[type],
+                [name]: `/${this.name}/${type}/${name}`
+            }
+        });
+
+        return menu;
     }
 
     public toJSON(): TsDocGenProjectJSON {
@@ -53,7 +74,7 @@ class TsDocGenProject {
      * @param callback The callback too be called for each source file
      */
     public forEachSourceFile(callback: (sourceFile: Record<string, DocUnionJSON>, config: TSDocGenProjectProps, path: string) => void) {
-        const { config, sourceFileDeclarationsMap } = this.toJSON();
+        const { config, sourceFileDeclarationsMap } = this.json;
 
         for (const path in sourceFileDeclarationsMap) {
             if (Object.prototype.hasOwnProperty.call(sourceFileDeclarationsMap, path)) {
@@ -107,6 +128,8 @@ class TsDocGenProject {
 
         return resolve(process.cwd(), 'node_modules', theme);
     }
+
+    // Private Methods 
 
     /**
      * Takes a `ts-morph` Node and converts it to a {@link Doc}
