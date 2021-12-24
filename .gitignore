@@ -4,3 +4,4 @@ yarn.lock
 package-lock.lock
 .cache/
 public
+.DS_Store
