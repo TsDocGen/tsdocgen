@@ -1,14 +1,14 @@
 {
-  "name": "tsdocgen",
-  "version": "1.0.0",
+  "name": "@tsdocgen/core",
+  "version": "0.0.4",
   "description": "Documentation generator for typescript",
   "main": "dist/index.js",
   "types": "dist/index.d.js",
+  "private": false,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "exec": "ts-node ./scripts/tsdocgen",
-    "build": "rm -rf dist && tsc -p tsconfig.json",
-    "postinstall": "npm run build"
+    "build": "rm -rf dist && tsc -p tsconfig.build.json"
   },
   "author": "Zerry Hogan",
   "license": "ISC",
@@ -16,9 +16,11 @@
     "@mdx-js/mdx": "^1.6.22",
     "@mdx-js/react": "^1.6.22",
     "@types/glob": "^7.1.4",
+    "@types/jest": "^27.0.3",
     "@types/lodash": "^4.14.173",
     "@types/node": "^16.9.1",
     "@types/react-helmet": "^6.1.2",
+    "jest": "^27.4.5",
     "reflect-metadata": "^0.1.13"
   },
   "dependencies": {
@@ -35,5 +37,8 @@
     "ts-morph": "^12.0.0",
     "ts-node": "^10.2.1",
     "typescript": "^4.4.3"
-  }
+  },
+  "files": [
+    "dist"
+  ]
 }

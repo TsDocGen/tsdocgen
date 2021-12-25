@@ -18,6 +18,8 @@ export interface DocProps {
 export interface PageProps {
     projectName: string;
     doc: DocUnionJSON;
+    menu: Record<string, Record<string, string>>;
+    theme: string;
 }
 
 export interface PropertiesComponentProps {
