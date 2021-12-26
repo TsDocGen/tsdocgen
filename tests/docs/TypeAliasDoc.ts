@@ -6,5 +6,7 @@ describe('', () => {
         const app = new TSDocGen();
 
         const documentation = app.generateDocumentation();
+
+        console.log(documentation);
     });
 });

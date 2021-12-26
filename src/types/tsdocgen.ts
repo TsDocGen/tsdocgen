@@ -24,7 +24,6 @@ export type TSDocGenProjectProps = {
   exportedDeclarationsOnly: boolean;
   projectName?: string;
   rootDir: string;
-  theme: string;
 }
 
 /**
@@ -57,10 +56,6 @@ export type TSDocGenProjectConfig = {
    * The root directory for a project.
    */
   rootDir: string;
-  /** 
-   * The name or location of the theme. 
-   */
-  theme: string;
 }
 
 /** Configuration options for `tsdocgen.config.js`. */
@@ -73,6 +68,10 @@ export type TSDocGenConfig = {
    * The output directory of the documentation relative to the current working directory.
    */
   outDir: string;
+  /** 
+   * The name or location of the theme. 
+   */
+  theme: string;
 };
 
 export type TsConfig = CompilerOptions & {

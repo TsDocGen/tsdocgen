@@ -1,5 +1,6 @@
 import { TypesFriendly } from "../../constants";
 import { UrlFactory } from "../../types/tsdocgen";
+import Config from "../configuration";
 import type TsDocGenProject from "../project";
 
 export type DocMenuItem = {
@@ -13,12 +14,16 @@ const defaultUrlFactory: UrlFactory = (projectName, docName, docType) => `/${pro
 class TsDocGenNavigation {
     private urlFactory: UrlFactory;
     private projects: TsDocGenProject[];
+    private config: Config;
     public menu: Record<string, Record<string, string>>;
 
-    constructor(projects: TsDocGenProject[], urlFactory: UrlFactory = defaultUrlFactory) {
+    constructor(projects: TsDocGenProject[], config: Config, urlFactory: UrlFactory = defaultUrlFactory) {
+        this.config = config;
         this.urlFactory = urlFactory;
         this.projects = projects;
         this.menu = this.buildMenu();
+
+        console.log(this.config);
     }
 
     // ----------- Public Methods -----------

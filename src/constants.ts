@@ -1,4 +1,5 @@
 import { DocType } from "./types/docs";
+import { TsDocGenTheme } from "./types/theme";
 
 export const TSDOCGEN_CONFIG_NAME = 'tsdocgen.config.js';
 
@@ -18,3 +19,6 @@ export const TypesFriendly: Record<DocType, string> = {
     'unknown': 'unknown',
     'variable': 'variables'
 }
+
+/** Theme cache/registry */
+export const ThemeRegistry = new Map<string, TsDocGenTheme>();

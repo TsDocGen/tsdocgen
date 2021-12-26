@@ -7,8 +7,8 @@ const config = {
         packageJson: 'package.json',
         exportedDeclarationsOnly: true,
         readme: 'README.md',
-        theme: 'ant-design'
-    }]
+    }],
+    theme: 'ant-design'
 };
 
 module.exports = config;

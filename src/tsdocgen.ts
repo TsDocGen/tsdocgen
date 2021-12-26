@@ -2,6 +2,8 @@ import Config from "./models/configuration";
 import EmitEvent from "./decorators/EmitEvent";
 import TsDocGenProject from "./models/project";
 import TsDocGenNavigation from "./models/navigation";
+import TsDocGenThemeFinder from "./models/themes";
+import { UrlFactory } from "./types/tsdocgen";
 
 /**
  * The TSDocGen Application. Handles traversing source files and converting them to
@@ -17,9 +19,15 @@ class TSDocGen {
 
     public navigation: TsDocGenNavigation;
 
-    constructor() {
+    public theme_finder: TsDocGenThemeFinder;
+
+    /**
+     * @param urlFactory The function for determining the url for each doc. Defaults to `/${projectName}/${docType}/${docName}.html`
+     */
+    constructor(urlFactory?: UrlFactory) {
         this.projects = this.generateDocumentation();
-        this.navigation = new TsDocGenNavigation(this.projects);
+        this.navigation = new TsDocGenNavigation(this.projects, this.config, urlFactory);
+        this.theme_finder = new TsDocGenThemeFinder(this.config);
     }
 
     // ----------- Public Methods -----------

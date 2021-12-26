@@ -7,7 +7,7 @@ import * as path from "path";
 
 class Config {
   /** The {@link TSDocGenConfig} configation file.  */
-  private tsDocGenConfig: TSDocGenConfig;
+  public tsDocGenConfig: TSDocGenConfig;
 
   /** The parsed projects defined in the {@link TSDocGenConfig}. */
   public projects: TSDocGenProjectProps[];
@@ -91,7 +91,6 @@ class Config {
         exportedDeclarationsOnly: project.exportedDeclarationsOnly ?? true,
         projectName: project.projectName,
         rootDir: project.rootDir,
-        theme: project.theme,
       }
     });
   }

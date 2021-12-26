@@ -1,23 +1,28 @@
 import { normalize, resolve } from "path";
-import { DefaultThemes } from "../../constants";
+import { DefaultThemes, ThemeRegistry } from "../../constants";
+import { TsDocGenTheme } from "../../types/theme";
+import Config from "../configuration";
 
 /**
  * Responsible for finding and validating themes.
  */
-class ThemeFinder {
-    /** The name of the theme */
-    public name: string;
+class TsDocGenThemeFinder {
+    private config: Config;
+    private theme: TsDocGenTheme;
 
-    constructor(name: string) {
-        this.name = name;
+    constructor(config: Config) {
+        this.config = config;
+        this.theme = this.getTheme(this.config.tsDocGenConfig.theme);
+
+        this.validateTheme(this.theme);
     }
-
+    
     /**
      * Resolves the path for a theme from node modules.
      * @returns The full path to the theme relative to the current working directory.
      */
-    public resolveThemePath(): string {
-        const theme = normalize(this.name);
+    public resolveThemePath(name: string): string {
+        const theme = normalize(name);
 
         if (DefaultThemes[theme]) {
             return resolve(process.cwd(), 'node_modules', 'tsdocgen-themes', theme);
@@ -30,10 +35,18 @@ class ThemeFinder {
     * Resolves the path for a theme from node modules.
     * @returns The full path to the theme relative to the current working directory.
     */
-    public getTheme(): string {
-        const theme = this.resolveThemePath();
+    public getTheme(name: string): TsDocGenTheme {
+        if (ThemeRegistry.has(name)) {
+            return ThemeRegistry.get(name) as TsDocGenTheme;
+        }
+
+        const theme_path = this.resolveThemePath(name);
+
+        const theme = require(theme_path);
 
         this.validateTheme(theme);
+
+        ThemeRegistry.set(name, theme);
 
         return theme;
     }
@@ -41,9 +54,9 @@ class ThemeFinder {
     /**
      * Validates that a theme has the correct minimum components.
      */
-    public validateTheme(theme_path: string) {
-        console.log(theme_path);
+    public validateTheme(theme: TsDocGenTheme) {
+        console.log(theme);
     }
 }
 
-export default ThemeFinder;
+export default TsDocGenThemeFinder;
