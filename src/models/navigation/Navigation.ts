@@ -1,10 +1,6 @@
-/**
- * A factory function for creating urls for docs.
- * @param docName The name of the generated doc
- * @param docType The type of the generated doc such as `class` or `function`;
- * @param docPath The full path of the doc relative to the current working directory.
- */
-export type UrlFactory = (projectName: string, docName: string, docType: string, docPath: string) => string;
+import { TypesFriendly } from "../../constants";
+import { UrlFactory } from "../../types/tsdocgen";
+import type TsDocGenProject from "../project";
 
 export type DocMenuItem = {
     name: string;
@@ -16,19 +12,38 @@ const defaultUrlFactory: UrlFactory = (projectName, docName, docType) => `/${pro
 
 class TsDocGenNavigation {
     private urlFactory: UrlFactory;
-    private projectName: string;
+    private projects: TsDocGenProject[];
+    public menu: Record<string, Record<string, string>>;
 
-    constructor(projectName: string, urlFactory: UrlFactory = defaultUrlFactory) {
-        this.projectName = projectName;
+    constructor(projects: TsDocGenProject[], urlFactory: UrlFactory = defaultUrlFactory) {
         this.urlFactory = urlFactory;
+        this.projects = projects;
+        this.menu = this.buildMenu();
     }
 
-    buildMenu = () => {
+    // ----------- Public Methods -----------
 
+    public getUrlForDoc = (projectName: string, docName: string, docType: string, docPath: string): string => {
+        return this.urlFactory(projectName, docName, docType, docPath);
     }
 
-    getUrlForDoc = (docName: string, docType: string, docPath: string): string => {
-        return this.urlFactory(this.projectName, docName, docType, docPath);
+    // ----------- Private Methods -----------
+
+    private buildMenu = () => {
+        const menu: Record<string, Record<string, string>> = {};
+
+        this.projects.forEach((project) => {
+            project.forEachDoc((doc) => {
+                const { type, name } = doc;
+    
+                menu[TypesFriendly[type]] = {
+                    ...menu[type],
+                    [name]: `/${project.name}/${type}/${name}`
+                }
+            });
+        });
+        
+        return menu;
     }
 }
 

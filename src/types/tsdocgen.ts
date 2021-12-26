@@ -109,3 +109,11 @@ export interface TsDocGenProjectJSON {
   config: TSDocGenProjectProps;
   sourceFileDeclarationsMap: Record<string, Record<string, DocUnionJSON>>;
 }
+
+/**
+ * A factory function for creating urls for docs.
+ * @param docName The name of the generated doc
+ * @param docType The type of the generated doc such as `class` or `function`;
+ * @param docPath The full path of the doc relative to the current working directory.
+ */
+ export type UrlFactory = (projectName: string, docName: string, docType: string, docPath: string) => string;

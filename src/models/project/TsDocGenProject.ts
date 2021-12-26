@@ -1,6 +1,5 @@
-import { join, resolve, normalize } from "path";
+import { join } from "path";
 import { ExportedDeclarations, Project, SourceFile, Node, SyntaxKind, TypeAliasDeclaration, ClassDeclaration, EnumDeclaration, FunctionDeclaration, InterfaceDeclaration, VariableDeclaration } from "ts-morph";
-import { DefaultThemes, TypesFriendly } from "../../constants";
 import { ProjectNameNotConfiguredError } from "../../errors";
 import { DocUnionJSON } from "../../types/docs";
 import { ProjectDeclarationsMap, SourceFileDeclarationMap, TsDocGenProjectJSON, TSDocGenProjectProps } from "../../types/tsdocgen";
@@ -18,7 +17,6 @@ class TsDocGenProject {
     public sourceFileDeclarationsMap: SourceFileDeclarationMap;
     public name: string;
     public json: TsDocGenProjectJSON;
-    public menu: Record<string, Record<string, string>>;
 
     constructor(config: TSDocGenProjectProps) {
         this.config = config;
@@ -28,25 +26,9 @@ class TsDocGenProject {
         this.sourceFileDeclarationsMap = this.createProject();
         this.name = this.config.projectName || this.config.packageJson.name || 'project';
         this.json = this.toJSON();
-        this.menu = this.buildMenu();
     }
 
-    // Public Methods
-
-    public buildMenu() {
-        const menu: Record<string, Record<string, string>> = {};
-
-        this.forEachDoc((doc) => {
-            const { type, name } = doc;
-
-            menu[TypesFriendly[type]] = {
-                ...menu[type],
-                [name]: `/${this.name}/${type}/${name}`
-            }
-        });
-
-        return menu;
-    }
+    // ----------- Public Methods -----------
 
     public toJSON(): TsDocGenProjectJSON {
         const sourceFileDeclarationsMap = Object.keys(this.sourceFileDeclarationsMap).reduce((map, path) => {
@@ -101,35 +83,7 @@ class TsDocGenProject {
         });
     }
 
-    /**
-     * Resolves the path for a theme from node modules.
-     * @returns The full path to the theme relative to the current working directory.
-     */
-     public resolveThemePath(): string {
-         const theme = normalize(this.config.theme);
-
-         if (DefaultThemes[theme]) {
-             return resolve(process.cwd(), 'node_modules', 'tsdocgen-themes', 'dist', theme);
-         }
-
-         return resolve(process.cwd(), 'node_modules', theme);
-    }
-
-    /**
-     * Resolves the path for a theme from node modules.
-     * @returns The full path to the theme relative to the current working directory.
-     */
-     public getTheme(): string {
-        const theme = normalize(this.config.theme);
-
-        if (DefaultThemes[theme]) {
-            return resolve(process.cwd(), 'node_modules', 'tsdocgen-themes', 'dist', theme);
-        }
-
-        return resolve(process.cwd(), 'node_modules', theme);
-    }
-
-    // Private Methods 
+    // ----------- Private Methods -----------
 
     /**
      * Takes a `ts-morph` Node and converts it to a {@link Doc}

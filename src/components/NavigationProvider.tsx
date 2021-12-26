@@ -1,26 +1,21 @@
-import React, { createContext, useContext, useMemo } from 'react';
-import TsDocGenNavigation from '../models/navigation';
-import { UrlFactory } from '../models/navigation/Navigation';
+import React, { createContext, useContext } from 'react';
 
-interface NavigationProps {
-    /** The factory function for creating urls for documents. */
-    urlFactory?: UrlFactory;
-    projectName: string;
-}
+type NavigationProps = {};
 
-const NavigationContext = createContext<TsDocGenNavigation | undefined>(undefined);
+type NavigationContextValue = {};
 
-const NavigationProvider: React.FC<NavigationProps> = ({ urlFactory, projectName, children }) => {
-    const Navigation = useMemo(() => new TsDocGenNavigation(projectName, urlFactory), []);
+const NavigationContext = createContext<NavigationContextValue | undefined>(undefined);
+
+const NavigationProvider: React.FC<NavigationProps> = ({ children }) => {
 
     return (
-        <NavigationContext.Provider value={Navigation}>
+        <NavigationContext.Provider value={{}}>
             {children}
         </NavigationContext.Provider>
     );
 }
 
-export function useNavigation() {
+export function useNavigation(): NavigationContextValue {
     const context = useContext(NavigationContext);
 
     if (!context) throw new Error('useNavigation should be used inside of a NavigationProvider');

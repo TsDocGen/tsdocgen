@@ -20,7 +20,7 @@ class Config {
     this.projects = this.getProjects();
   }
 
-  // Public Methods
+  // ----------- Public Methods -----------
 
   /**
    * Returns the output directory specified in the config.
@@ -31,7 +31,7 @@ class Config {
     return path.join(cwd, this.tsDocGenConfig.outDir);
   }
 
-  // Private Methods
+  // ----------- Private Methods -----------
 
   /**
    * Finds the path tsconfig.json file for the project.

@@ -13,7 +13,7 @@ import PropertyDoc from "../models/documentation/PropertyDoc";
 declare class EventEmitter {
     public emit(name: typeof Events.START_PROJECT): void;
     public emit(name: typeof Events.END_PROJECT): void;
-    public emit(name: typeof Events.CREATE_DOC, doc: Doc<Node>): void;
+    public emit(name: typeof Events.CREATE_DOC, doc: Doc<any, Node>): void;
     public emit(name: typeof Events.CREATE_CLASS_DOC, doc: ClassDoc): void;
     public emit(name: typeof Events.CREATE_METHOD_DOC, doc: MethodDoc): void;
     public emit(name: typeof Events.CREATE_PROPERTY_DOC, doc: PropertyDoc): void;
@@ -21,7 +21,7 @@ declare class EventEmitter {
 
     public listen(name: typeof Events.START_PROJECT, listener: () => void): void;
     public listen(name: typeof Events.END_PROJECT, listener: () => void): void;
-    public listen(name: typeof Events.CREATE_DOC, listener: (doc: Doc<Node>) => void): void;
+    public listen(name: typeof Events.CREATE_DOC, listener: (doc: Doc<any, Node>) => void): void;
     public listen(name: typeof Events.CREATE_CLASS_DOC, listener: (doc: ClassDoc) => void): void;
     public listen(name: typeof Events.CREATE_METHOD_DOC, listener: (doc: MethodDoc) => void): void;
     public listen(name: typeof Events.CREATE_PROPERTY_DOC, listener: (doc: PropertyDoc) => void): void;

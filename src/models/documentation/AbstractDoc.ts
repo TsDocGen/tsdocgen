@@ -29,7 +29,7 @@ class AbstractDoc<T extends string, N extends Node, S extends Structure = Struct
         this.setDescriptionAndTags();
     }
 
-    // Public Methods
+    // ----------- Public Methods -----------
 
     /** Returns a JSON representation of a doc. */
     public toJSON(): AbstractDocJSON<T> & Record<string, any> {
@@ -77,7 +77,7 @@ class AbstractDoc<T extends string, N extends Node, S extends Structure = Struct
         return [];
     }
 
-    // Private Methods
+    // ----------- Private Methods -----------
 
     private getIsDefaultExport = () => {
         if (Node.isExportableNode(this.node)) {
