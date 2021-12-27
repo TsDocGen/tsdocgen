@@ -1,37 +1,60 @@
-import { Node } from "ts-morph";
+import { Node, TypeChecker } from "ts-morph";
+import MethodDoc from "../models/documentation/MethodDoc";
 import PropertyDoc from "../models/documentation/PropertyDoc";
 import { ClassType } from "../types/tsdocgen";
 
-function getProperties(node: Node) {
+type PropertiesAndMethodsMap = {
+    methods: MethodDoc[];
+    properties: PropertyDoc[]
+}
+
+function convertArrowFunctionsToMethods(properties: PropertyDoc[], checker: TypeChecker): PropertiesAndMethodsMap {
+    return properties.reduce(({ methods, properties }, property) => {
+        if (property.isArrowFunction) {
+            return {
+                methods: [...methods, new MethodDoc(property.node, checker)],
+                properties: properties,
+            }  
+        }
+        return {
+            methods: methods,
+            properties: [...properties, property],
+        }
+    }, { methods: [], properties: []} as PropertiesAndMethodsMap)
+}
+
+function getPropertiesAndMethods(node: Node, checker: TypeChecker) {
     if (Node.isTypedNode(node)) {
         const type = node.getTypeNode();
 
         if (Node.isTypeLiteralNode(type)) {
-            return type.getProperties().map((property) => {
-                return new PropertyDoc(property)
+            const properties = type.getProperties().map((property) => {
+                return new PropertyDoc(property, checker)
             });
+            return convertArrowFunctionsToMethods(properties, checker);
         }
-
-        return [];
     }
 
     if (Node.isTypeElementMemberedNode(node)) {
-        return node.getProperties().map((property) => {
-            return new PropertyDoc(property)
+        const properties = node.getProperties().map((property) => {
+            return new PropertyDoc(property, checker)
         });
+        return convertArrowFunctionsToMethods(properties, checker);
     }
 
     if (Node.isClassLikeDeclarationBase(node)) {
-        return node.getProperties().map((property) => {
-            return new PropertyDoc(property)
+        const properties = node.getProperties().map((property) => {
+            return new PropertyDoc(property, checker)
         });
+        return convertArrowFunctionsToMethods(properties, checker);
     }
     
-    return [];
+    return { methods: [], properties: [] };
 }
 
 /**
- * Attaches an array of {@link PropertyDoc}'s `properties` to a Doc
+ * Attaches an array of {@link PropertyDoc}'s `properties` to a Doc. If the property
+ * is an arrow function then the property will be converted to a {@link MethodDoc}.
  */
 function AddPropertiesDocs<T extends ClassType>(constructor: T) {
     return class extends constructor {
@@ -42,7 +65,10 @@ function AddPropertiesDocs<T extends ClassType>(constructor: T) {
 
             const target = this as any;
 
-            target.properties = getProperties(node);
+            const { methods, properties } = getPropertiesAndMethods(node, args[2]);
+
+            target.properties = properties;
+            target.methods = methods;
 
             const toJSON = target.toJSON.bind(this);
 
@@ -50,6 +76,7 @@ function AddPropertiesDocs<T extends ClassType>(constructor: T) {
                 return {
                     ...toJSON(),
                     properties: target.properties.map((property: PropertyDoc) => property.toJSON()),
+                    methods: target.methods.map((method: MethodDoc) => method.toJSON()),
                 };
             }.bind(this);
         }

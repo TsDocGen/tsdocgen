@@ -16,6 +16,7 @@
   "devDependencies": {
     "@mdx-js/mdx": "^1.6.22",
     "@mdx-js/react": "^1.6.22",
+    "@tsdocgen/themes": "^0.0.5",
     "@types/glob": "^7.1.4",
     "@types/jest": "^27.0.3",
     "@types/lodash": "^4.14.173",

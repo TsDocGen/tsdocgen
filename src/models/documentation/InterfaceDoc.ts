@@ -1,4 +1,4 @@
-import { InterfaceDeclaration, InterfaceDeclarationStructure, Node } from "ts-morph";
+import { InterfaceDeclaration, InterfaceDeclarationStructure, Node, TypeChecker } from "ts-morph";
 import EmitDocEvent from "../../decorators/EmitDocEvent";
 import notEmpty from "../../utils/notEmpty";
 import ClassDoc from "./ClassDoc";
@@ -18,17 +18,14 @@ type InterfaceDocJSON = DocJSON<"interface"> & {
 class InterfaceDoc extends Doc<"interface",InterfaceDeclaration, InterfaceDeclarationStructure> {
 
     private baseDeclarations: (InterfaceDoc | TypeAliasDoc | ClassDoc)[];
-    public methods: MethodDoc[];
+    public methods!: MethodDoc[];
 
-    constructor(node: InterfaceDeclaration) {
-        super(node, "interface");
+    constructor(node: InterfaceDeclaration, checker: TypeChecker) {
+        super(node, "interface", checker);
 
         this.baseDeclarations = this.getBaseDeclarations();
         this.properties = this.getProperties();
-        this.methods = this.getMethods();
-
-        this.node.getProperties();
-        // console.log(this.toJSON());
+        this.methods = [...this.methods, ...this.getMethods()];
     }
 
     public override toString() {
@@ -40,29 +37,28 @@ class InterfaceDoc extends Doc<"interface",InterfaceDeclaration, InterfaceDeclar
             ...super.toJSON(),
             extends: this.structure?.extends,
             hasDeclareKeyword: this.structure?.hasDeclareKeyword,
-            isExported: this.structure?.isExported,
             baseDeclarations: this.baseDeclarations.map((baseDeclaration) => baseDeclaration.toJSON()),
         }
     }
 
     private getBaseDeclarations() {
         return this.node.getBaseDeclarations().map((declaration) => {
-            if (Node.isTypeAliasDeclaration(declaration)) return new TypeAliasDoc(declaration);
-            else if (Node.isClassDeclaration(declaration)) return new ClassDoc(declaration);
-            else if (Node.isInterfaceDeclaration(declaration)) return new InterfaceDoc(declaration);
+            if (Node.isTypeAliasDeclaration(declaration)) return new TypeAliasDoc(declaration, this.checker);
+            else if (Node.isClassDeclaration(declaration)) return new ClassDoc(declaration, this.checker);
+            else if (Node.isInterfaceDeclaration(declaration)) return new InterfaceDoc(declaration, this.checker);
             else return null
         }).filter(notEmpty);
     }
 
     private getProperties() {
         return this.node.getProperties().map((property) => {
-            return new PropertyDoc(property);
+            return new PropertyDoc(property, this.checker);
         });
     }
 
     private getMethods() {
         return this.node.getMethods().map((method) => {
-            return new MethodDoc(method);
+            return new MethodDoc(method, this.checker);
         });
     }
 }

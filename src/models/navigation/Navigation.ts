@@ -22,8 +22,7 @@ class TsDocGenNavigation {
         this.urlFactory = urlFactory;
         this.projects = projects;
         this.menu = this.buildMenu();
-
-        console.log(this.config);
+        this.config;
     }
 
     // ----------- Public Methods -----------

@@ -1,22 +1,20 @@
-import { ParameterDeclaration, ParameterDeclarationStructure } from "ts-morph";
+import { ParameterDeclaration, ParameterDeclarationStructure, TypeChecker } from "ts-morph";
 import EmitDocEvent from "../../decorators/EmitDocEvent";
 import AbstractDoc from "./AbstractDoc";
 
 @EmitDocEvent('CREATE_PARAMETER_DOC')
 class ParameterDoc extends AbstractDoc<"parameter",ParameterDeclaration, ParameterDeclarationStructure> {
 
-    constructor(node: ParameterDeclaration) {
-        super(node, "parameter");
+    constructor(node: ParameterDeclaration, checker: TypeChecker) {
+        super(node, "parameter", checker);
     }
 
     public override toJSON() {
+        const { type, ...structure } = this.structure || {};
         return {
             ...super.toJSON(),
-            hasQuestionToken: this.structure?.hasQuestionToken,
-            initializer: this.structure?.initializer,
-            isRestParameter: this.structure?.isRestParameter,
-            hasOverrideKeyword: this.structure?.hasOverrideKeyword,
-            returnType: this.getReturnType()
+            ...structure,
+            tsType: type,
         }
     }
 

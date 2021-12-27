@@ -1,19 +1,6 @@
-import { Node } from "ts-morph";
 import ParameterDoc from "../models/documentation/ParameterDoc";
 import { ClassType } from "../types/tsdocgen";
-
-/**
- * Gets the call, index or construct signatures
- */
-function getParameters(node: Node) {
-    if (Node.isParameteredNode(node)) {
-        return node.getParameters().map((parameter) => {
-            return new ParameterDoc(parameter)
-        });
-    }
-
-    return [];
-}
+import getParameters from "../utils/getParameters";
 
 /**
  * Attaches an array of {@link ParameterDoc}'s `parameters` to a Doc
@@ -27,7 +14,7 @@ function AddParameterDocs<T extends ClassType>(constructor: T) {
 
             const target = this as any;
 
-            target.parameters = getParameters(node);
+            target.parameters = getParameters(node, args[2]);
 
             const toJSON = target.toJSON.bind(this);
 

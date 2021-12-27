@@ -1,5 +1,5 @@
 import { join } from "path";
-import { ExportedDeclarations, Project, SourceFile, Node, SyntaxKind, TypeAliasDeclaration, ClassDeclaration, EnumDeclaration, FunctionDeclaration, InterfaceDeclaration, VariableDeclaration } from "ts-morph";
+import { ExportedDeclarations, Project, SourceFile, Node, SyntaxKind, TypeAliasDeclaration, ClassDeclaration, EnumDeclaration, FunctionDeclaration, InterfaceDeclaration, VariableDeclaration, TypeChecker } from "ts-morph";
 import { ProjectNameNotConfiguredError } from "../../errors";
 import { DocUnionJSON } from "../../types/docs";
 import { ProjectDeclarationsMap, SourceFileDeclarationMap, TsDocGenProjectJSON, TSDocGenProjectProps } from "../../types/tsdocgen";
@@ -14,6 +14,7 @@ import VariableDoc from "../documentation/VariableDoc";
 class TsDocGenProject {
     public config: TSDocGenProjectProps;
     private tsProject: Project;
+    private checker: TypeChecker;
     public sourceFileDeclarationsMap: SourceFileDeclarationMap;
     public name: string;
     public json: TsDocGenProjectJSON;
@@ -23,6 +24,7 @@ class TsDocGenProject {
         this.tsProject = new Project({
             tsConfigFilePath: this.config.tsConfigFilePath,
         });
+        this.checker = this.tsProject.getTypeChecker();
         this.sourceFileDeclarationsMap = this.createProject();
         this.name = this.config.projectName || this.config.packageJson.name || 'project';
         this.json = this.toJSON();
@@ -61,7 +63,7 @@ class TsDocGenProject {
         for (const path in sourceFileDeclarationsMap) {
             if (Object.prototype.hasOwnProperty.call(sourceFileDeclarationsMap, path)) {
                 const sourceFile = sourceFileDeclarationsMap[path];
-                
+
                 callback(sourceFile, config, path);
             }
         }
@@ -76,7 +78,7 @@ class TsDocGenProject {
             for (const docName in sourceFile) {
                 if (Object.prototype.hasOwnProperty.call(sourceFile, docName)) {
                     const doc = sourceFile[docName];
-                    
+
                     callback(doc, config, sourceFile, path);
                 }
             }
@@ -90,41 +92,41 @@ class TsDocGenProject {
      * @param node A `ts-morph` Node.
      * @returns 
      */
-     private buildDocs = (node: Node) => {
+    private buildDocs = (node: Node) => {
         const kind = node.getKind();
 
         switch (kind) {
             case SyntaxKind.ClassDeclaration:
-                return new ClassDoc(node as ClassDeclaration);
+                return new ClassDoc(node as ClassDeclaration, this.checker);
             case SyntaxKind.FunctionDeclaration:
-                return new FunctionDoc(node as FunctionDeclaration);
+                return new FunctionDoc(node as FunctionDeclaration, this.checker);
             case SyntaxKind.TypeAliasDeclaration:
-                return new TypeAliasDoc(node as TypeAliasDeclaration);
+                return new TypeAliasDoc(node as TypeAliasDeclaration, this.checker);
             case SyntaxKind.InterfaceDeclaration:
-                return new InterfaceDoc(node as InterfaceDeclaration);
+                return new InterfaceDoc(node as InterfaceDeclaration, this.checker);
             case SyntaxKind.EnumDeclaration:
-                return new EnumDoc(node as EnumDeclaration);
+                return new EnumDoc(node as EnumDeclaration, this.checker);
             case SyntaxKind.VariableDeclaration:
-                return new VariableDoc(node as VariableDeclaration);
+                return new VariableDoc(node as VariableDeclaration, this.checker);
             default:
-                return new UnknownDoc(node);
+                return new UnknownDoc(node, this.checker);
         }
     }
-    
+
     private getDeclarations = (): ProjectDeclarationsMap => {
         const map: Record<string, { path: string, sourceFile: SourceFile, exportedDeclarations: ReadonlyMap<string, ExportedDeclarations[]> }> = {};
 
-            const sourceFiles = this.tsProject.addSourceFilesFromTsConfig(this.config.tsConfigFilePath);
+        const sourceFiles = this.tsProject.addSourceFilesAtPaths([this.config.entryPoint]);
 
-            for (const sourceFile of sourceFiles) {
-                const path = sourceFile.getFilePath().replace(join(process.cwd(), this.config.rootDir), '');
+        for (const sourceFile of sourceFiles) {
+            const path = sourceFile.getFilePath().replace(join(process.cwd(), this.config.rootDir), '');
 
-                map[path] = {
-                    path: path,
-                    sourceFile: sourceFile,
-                    exportedDeclarations: sourceFile.getExportedDeclarations(),
-                }
+            map[path] = {
+                path: path,
+                sourceFile: sourceFile,
+                exportedDeclarations: sourceFile.getExportedDeclarations(),
             }
+        }
 
         return map;
     }
@@ -134,7 +136,7 @@ class TsDocGenProject {
      * @param project A project config
      * @returns The project name and the tree.
      */
-     private createProject = (): SourceFileDeclarationMap => {
+    private createProject = (): SourceFileDeclarationMap => {
         const { name: projectName = this.config.projectName } = this.config.packageJson;
 
         if (!projectName) {
@@ -148,7 +150,7 @@ class TsDocGenProject {
         for (const sourceFilePath in exportedDeclarations) {
             if (Object.prototype.hasOwnProperty.call(exportedDeclarations, sourceFilePath)) {
                 const sourceFileResult = exportedDeclarations[sourceFilePath];
-                
+
                 const current = sourceFileMap[sourceFilePath] || {};
 
                 sourceFileMap[sourceFilePath] = {
@@ -157,7 +159,7 @@ class TsDocGenProject {
 
                 for (const [name, declarations] of sourceFileResult.exportedDeclarations) {
                     const doc = this.buildDocs(declarations[0]);
-    
+
                     const docName = name === 'default' ? doc.name : name;
 
                     const current = sourceFileMap[sourceFilePath] || {};

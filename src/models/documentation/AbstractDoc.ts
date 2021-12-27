@@ -1,5 +1,5 @@
 import { parse } from "comment-parser";
-import { JSDoc, Structure, Node, TypeFormatFlags, SyntaxKind } from "ts-morph";
+import { JSDoc, Structure, Node, TypeFormatFlags, SyntaxKind, Symbol, TypeChecker, Type } from "ts-morph";
 import { AbstractDocJSON, TsDocGenDoc } from "../../types/tsdocgen";
 import isNodeWithStructure from "../../utils/isNodeWithStructure";
 
@@ -15,15 +15,21 @@ class AbstractDoc<T extends string, N extends Node, S extends Structure = Struct
     public structure: S | null;
     public type: T;
     public isDefaultExport: boolean;
+    public symbol: Symbol | undefined;
+    public checker: TypeChecker;
+    public tsType: Type | undefined;
 
-    constructor(node: N, type: T) {
+    constructor(node: N, type: T, checker: TypeChecker) {
         // Variables
         this.node = node;
+        this.symbol = node.getSymbol();
+        this.checker = checker;
         this.name = this.getName();
         this.kind = this.node.getKindName();
         this.structure = this.getStructure();
         this.type = type;
         this.isDefaultExport = this.getIsDefaultExport();
+        this.tsType = this.symbol?.getTypeAtLocation(node)
 
         // Effects
         this.setDescriptionAndTags();
@@ -40,7 +46,8 @@ class AbstractDoc<T extends string, N extends Node, S extends Structure = Struct
             jsDoc: {
                 description: this.description,
                 tags: this.tags,
-            }
+            },
+            isExported: Node.isExportableNode(this.node) ? this.node.isExported() : false
         }
     }
 
@@ -119,6 +126,7 @@ class AbstractDoc<T extends string, N extends Node, S extends Structure = Struct
                 description: doc.getDescription(),
                 tags: parsedComments[0].tags.map((tag) => {
                     return {
+                        tag: tag.tag,
                         tagName: tag.name,
                         text: tag.description
                     }

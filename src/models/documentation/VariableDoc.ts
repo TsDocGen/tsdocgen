@@ -1,4 +1,4 @@
-import { SyntaxKind, VariableDeclaration, VariableDeclarationStructure, VariableStatement, VariableStatementStructure } from "ts-morph";
+import { SyntaxKind, TypeChecker, VariableDeclaration, VariableDeclarationStructure, VariableStatement, VariableStatementStructure } from "ts-morph";
 import EmitDocEvent from "../../decorators/EmitDocEvent";
 import Doc from "./Doc";
 
@@ -9,8 +9,8 @@ class VariableDoc extends Doc<"variable", VariableDeclaration, VariableDeclarati
     private statementStructure: VariableStatementStructure | undefined;
     private values: VariableDoc[];
 
-    constructor(node: VariableDeclaration) {
-        super(node, "variable");
+    constructor(node: VariableDeclaration, checker: TypeChecker) {
+        super(node, "variable", checker);
 
         this.statement = this.node.getVariableStatement();
         this.statementStructure = this.statement?.getStructure();
@@ -40,7 +40,7 @@ class VariableDoc extends Doc<"variable", VariableDeclaration, VariableDeclarati
 
         if (list) {
             return list.getChildrenOfKind(SyntaxKind.VariableDeclaration).map((variableDeclaration) => {
-                return new VariableDoc(variableDeclaration);
+                return new VariableDoc(variableDeclaration, this.checker);
             });
         }
         

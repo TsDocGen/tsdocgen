@@ -1,34 +1,32 @@
-import { ClassDeclaration, ClassDeclarationStructure } from "ts-morph";
+import { ClassDeclaration, ClassDeclarationStructure, TypeChecker } from "ts-morph";
 import EmitDocEvent from "../../decorators/EmitDocEvent";
 import Doc from "./Doc";
 import MethodDoc from "./MethodDoc";
 
 @EmitDocEvent('CREATE_CLASS_DOC')
 class ClassDoc extends Doc<"class",ClassDeclaration, ClassDeclarationStructure> {
-    public instanceMethods: MethodDoc[];
-    public staticMethods: MethodDoc[];
+    public methods!: MethodDoc[];
     public isAbstract: boolean;
     public extends: string | undefined;
 
-    constructor(node: ClassDeclaration) {
-        super(node, "class");
+    constructor(node: ClassDeclaration, checker: TypeChecker) {
+        super(node, "class", checker);
 
         // Variables
         this.isAbstract = this.node.isAbstract();
-        this.instanceMethods = this.getInstanceMethods();
-        this.staticMethods = this.getStaticMethods();
+        this.methods = [...this.methods, ...this.getInstanceMethods(), ...this.getStaticMethods()];
         this.extends = this.node.getBaseClass()?.getName();
     } 
 
     private getStaticMethods = () => {
-        return this.node.getStaticMethods().map((instanceMethod) => {
-            return new MethodDoc(instanceMethod);
+        return this.node.getStaticMethods().map((staticMethod) => {
+            return new MethodDoc(staticMethod, this.checker);
         });
     }
 
     private getInstanceMethods = () => {
         return this.node.getInstanceMethods().map((instanceMethod) => {
-            return new MethodDoc(instanceMethod);
+            return new MethodDoc(instanceMethod, this.checker);
         });
     }
 
@@ -37,8 +35,7 @@ class ClassDoc extends Doc<"class",ClassDeclaration, ClassDeclarationStructure> 
             ...super.toJSON(),
             extends: this.extends,
             isAbstract: this.isAbstract,
-            instanceMethods: this.instanceMethods.map((instanceMethod) => instanceMethod.toJSON()),
-            staticMethods: this.staticMethods.map((staticMethod) => staticMethod.toJSON()),
+            methods: this.methods.map((method) => method.toJSON()),
         }
     }
 }

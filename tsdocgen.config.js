@@ -1,7 +1,8 @@
 const config = {
     outDir: 'docs',
     projects: [{
-        entryPoint: 'src/index.ts',
+        // entryPoint: 'src/index.ts',
+        entryPoint: 'src/models/documentation/AbstractDoc.ts',
         rootDir: 'src',
         tsConfig: 'tsconfig.json',
         packageJson: 'package.json',

@@ -1,4 +1,4 @@
-import { FunctionDeclaration, FunctionDeclarationStructure } from "ts-morph";
+import { FunctionDeclaration, FunctionDeclarationStructure, TypeChecker } from "ts-morph";
 import EmitDocEvent from "../../decorators/EmitDocEvent";
 import Doc, { DocJSON } from "./Doc";
 
@@ -7,7 +7,6 @@ export interface FunctionDocJSON extends DocJSON<"function"> {
     isGenerator: boolean;
     returnType: string;
     overloads: FunctionDocJSON[],
-    isExported?: boolean;
 }
 
 @EmitDocEvent('CREATE_FUNCTION_DOC')
@@ -17,8 +16,8 @@ class FunctionDoc extends Doc<"function",FunctionDeclaration, FunctionDeclaratio
     public isGenerator: boolean;
     public overloads: FunctionDoc[];
 
-    constructor(node: FunctionDeclaration) {
-        super(node, "function");
+    constructor(node: FunctionDeclaration, checker: TypeChecker) {
+        super(node, "function", checker);
 
         this.isAsync = this.node.isAsync();
         this.isGenerator = this.node.isGenerator();
@@ -32,7 +31,6 @@ class FunctionDoc extends Doc<"function",FunctionDeclaration, FunctionDeclaratio
             isGenerator: this.isGenerator,
             returnType: this.getReturnType(),
             overloads: this.overloads.map((overload) => overload.toJSON()),
-            isExported: this.structure?.isExported
         }
     }
 
@@ -42,7 +40,7 @@ class FunctionDoc extends Doc<"function",FunctionDeclaration, FunctionDeclaratio
 
     private getOverloads() {
         return this.node.getOverloads().map((overload) => {
-            return new FunctionDoc(overload);
+            return new FunctionDoc(overload, this.checker);
         })
     }
 }

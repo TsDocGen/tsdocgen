@@ -12,7 +12,8 @@ export interface AbstractDocJSON<T extends string = string> {
   jsDoc: {
       description: string;
       tags: TsDocGenDoc['tags'];
-  }
+  },
+  isExported: boolean;
 };
 
 export type TSDocGenProjectProps = {
@@ -81,6 +82,7 @@ export type TsConfig = CompilerOptions & {
 export type TsDocGenDoc = {
   description: string;
   tags: {
+    tag: string;
     tagName: string;
     text: string;
   }[]

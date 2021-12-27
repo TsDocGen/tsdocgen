@@ -1,12 +1,12 @@
-import { TypeAliasDeclaration, TypeAliasDeclarationStructure } from "ts-morph";
+import { TypeAliasDeclaration, TypeAliasDeclarationStructure, TypeChecker } from "ts-morph";
 import EmitDocEvent from "../../decorators/EmitDocEvent";
 import Doc from "./Doc";
 
 @EmitDocEvent('CREATE_TYPE_ALIAS_DOC')
 class TypeAliasDoc extends Doc<"type-alias",TypeAliasDeclaration, TypeAliasDeclarationStructure> {
 
-    constructor(node: TypeAliasDeclaration) {
-        super(node, "type-alias");
+    constructor(node: TypeAliasDeclaration, checker: TypeChecker) {
+        super(node, "type-alias", checker);
 
         // console.log(this.node.getType().getConstructSignatures());
         // this.node.getType().getCallSignatures()

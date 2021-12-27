@@ -55,7 +55,7 @@ class TsDocGenThemeFinder {
      * Validates that a theme has the correct minimum components.
      */
     public validateTheme(theme: TsDocGenTheme) {
-        console.log(theme);
+        return theme;
     }
 }
 

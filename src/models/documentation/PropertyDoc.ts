@@ -1,4 +1,4 @@
-import { PropertyDeclaration, PropertyDeclarationStructure, PropertySignature, PropertySignatureStructure } from "ts-morph";
+import { PropertyDeclaration, PropertyDeclarationStructure, PropertySignature, PropertySignatureStructure, ts, TypeChecker } from "ts-morph";
 import EmitDocEvent from "../../decorators/EmitDocEvent";
 import AbstractDoc from "./AbstractDoc";
 
@@ -8,8 +8,12 @@ class PropertyDoc extends AbstractDoc<
     PropertyDeclaration | PropertySignature, 
     PropertyDeclarationStructure | PropertySignatureStructure
     > {
-    constructor(node: PropertyDeclaration | PropertySignature) {
-        super(node, "property");
+    public isArrowFunction: boolean;
+
+    constructor(node: PropertyDeclaration | PropertySignature, checker: TypeChecker) {
+        super(node, "property", checker);
+
+        this.isArrowFunction = this.checkIfArrowFunction();
     }
 
     public override toJSON() {
@@ -19,6 +23,16 @@ class PropertyDoc extends AbstractDoc<
             isReadonly: this.structure?.isReadonly,
             returnType: this.getReturnType(),
         }
+    }
+
+    private checkIfArrowFunction() {
+        const initializer = this.node.getInitializer();
+
+        if (initializer) {
+            return ts.isArrowFunction(initializer.compilerNode);
+        }
+
+        return false;
     }
 }
 
