@@ -1,6 +1,6 @@
 {
   "name": "@tsdocgen/core",
-  "version": "0.0.5",
+  "version": "0.0.11",
   "description": "Documentation generator for typescript",
   "main": "dist/index.js",
   "types": "dist/index.d.js",
@@ -8,7 +8,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "exec": "ts-node ./scripts/tsdocgen",
-    "build": "rm -rf dist && tsc -p tsconfig.build.json"
+    "build": "rm -rf dist && tsc -p tsconfig.build.json",
+    "prepublishOnly": "yarn run build"
   },
   "author": "Zerry Hogan",
   "license": "ISC",

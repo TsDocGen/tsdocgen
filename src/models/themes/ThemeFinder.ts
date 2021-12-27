@@ -25,7 +25,7 @@ class TsDocGenThemeFinder {
         const theme = normalize(name);
 
         if (DefaultThemes[theme]) {
-            return resolve(process.cwd(), 'node_modules', 'tsdocgen-themes', theme);
+            return resolve(process.cwd(), 'node_modules', '@tsdocgen', 'themes', theme);
         }
 
         return resolve(process.cwd(), 'node_modules', theme);

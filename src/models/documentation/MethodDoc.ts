@@ -1,6 +1,13 @@
 import { MethodDeclaration, MethodDeclarationStructure, MethodSignature, MethodSignatureStructure, Node } from "ts-morph";
 import EmitDocEvent from "../../decorators/EmitDocEvent";
-import Doc from "./Doc";
+import Doc, { DocJSON } from "./Doc";
+
+export interface MethodDocJSON extends DocJSON<"method"> {
+    returnType: string;
+    isStatic: boolean;
+    hasQuestionToken?: boolean;
+    scope: string;
+}
 
 @EmitDocEvent('CREATE_METHOD_DOC')
 class MethodDoc extends Doc<"method", MethodDeclaration | MethodSignature, MethodDeclarationStructure | MethodSignatureStructure> {
@@ -18,7 +25,7 @@ class MethodDoc extends Doc<"method", MethodDeclaration | MethodSignature, Metho
         return '';
     }
 
-    public override toJSON() {
+    public override toJSON(): MethodDocJSON {
         const base = {
             ...super.toJSON(),
             returnType: this.getReturnType(),

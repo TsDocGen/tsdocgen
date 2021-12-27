@@ -16,6 +16,7 @@ class ParameterDoc extends AbstractDoc<"parameter",ParameterDeclaration, Paramet
             initializer: this.structure?.initializer,
             isRestParameter: this.structure?.isRestParameter,
             hasOverrideKeyword: this.structure?.hasOverrideKeyword,
+            returnType: this.getReturnType()
         }
     }
 
