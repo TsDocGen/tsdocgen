@@ -1,23 +1,33 @@
-import { FunctionDeclaration, FunctionDeclarationStructure, TypeChecker } from "ts-morph";
+import { FunctionDeclaration, FunctionDeclarationStructure } from "ts-morph";
 import EmitDocEvent from "../../decorators/EmitDocEvent";
 import Doc, { DocJSON } from "./Doc";
+import type TsDocGenContext from '../context';
+import AddTypeParameterDocs from "../../decorators/AddTypeParameterDocs";
+import TypeParameterDoc, { TypeParameterDocJSON } from "./TypeParameterDoc";
+import AddParameterDocs from "../../decorators/AddParameterDocs";
+import ParameterDoc, { ParameterDocJSON } from "./ParameterDoc";
 
 export interface FunctionDocJSON extends DocJSON<"function"> {
     isAsync: boolean;
     isGenerator: boolean;
     returnType: string;
-    overloads: FunctionDocJSON[],
+    overloads: FunctionDocJSON[];
+    typeParameters: TypeParameterDocJSON[];
+    parameters: ParameterDocJSON[]
 }
 
+@AddParameterDocs
+@AddTypeParameterDocs
 @EmitDocEvent('CREATE_FUNCTION_DOC')
-class FunctionDoc extends Doc<"function",FunctionDeclaration, FunctionDeclarationStructure> {
-
+class FunctionDoc extends Doc<"function", FunctionDeclaration , FunctionDeclarationStructure> {
     public isAsync: boolean;
     public isGenerator: boolean;
     public overloads: FunctionDoc[];
+    public typeParameters!: TypeParameterDoc[];
+    public parameters!: ParameterDoc[];
 
-    constructor(node: FunctionDeclaration, checker: TypeChecker) {
-        super(node, "function", checker);
+    constructor(node: FunctionDeclaration, context: TsDocGenContext) {
+        super(node, "function", context);
 
         this.isAsync = this.node.isAsync();
         this.isGenerator = this.node.isGenerator();
@@ -31,7 +41,7 @@ class FunctionDoc extends Doc<"function",FunctionDeclaration, FunctionDeclaratio
             isGenerator: this.isGenerator,
             returnType: this.getReturnType(),
             overloads: this.overloads.map((overload) => overload.toJSON()),
-        }
+        } as FunctionDocJSON
     }
 
     public override toString() {
@@ -40,7 +50,7 @@ class FunctionDoc extends Doc<"function",FunctionDeclaration, FunctionDeclaratio
 
     private getOverloads() {
         return this.node.getOverloads().map((overload) => {
-            return new FunctionDoc(overload, this.checker);
+            return new FunctionDoc(overload, this.context);
         })
     }
 }

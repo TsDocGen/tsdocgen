@@ -1,14 +1,22 @@
-import { Node, TypeChecker } from "ts-morph";
+import { Node } from "ts-morph";
 import TypeParameterDoc from "../models/documentation/TypeParameterDoc";
-import { ClassType } from "../types/tsdocgen";
+import { ClassType, TsDocGenDoc } from "../types/tsdocgen";
+import type TsDocGenContext from '../models/context';
+import findTagForDoc from "../utils/findTagForDoc";
 
 /**
  * Gets the call, index or construct signatures
  */
-function getTypeParameters(node: Node, checker: TypeChecker) {
+function getTypeParameters(node: Node, context: TsDocGenContext, tags: TsDocGenDoc['tags']) {
     if (Node.isTypeParameteredNode(node)) {
         return node.getTypeParameters().map((typeParameter) => {
-            return new TypeParameterDoc(typeParameter, checker)
+            const doc = new TypeParameterDoc(typeParameter, context);
+
+            const tag = findTagForDoc(tags, doc.name, 'typeParam');
+
+            if (tag) doc.setDescription(tag.text);
+            
+            return doc;
         });
     }
     return [];
@@ -26,7 +34,7 @@ function AddTypeParameterDocs<T extends ClassType>(constructor: T) {
 
             const target = this as any;
 
-            target.typeParameters = getTypeParameters(node, args[2]);
+            target.typeParameters = getTypeParameters(node, args[2], target.tags);
 
             const toJSON = target.toJSON.bind(this);
 

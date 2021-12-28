@@ -1,13 +1,29 @@
-import { TypeChecker, Node, ts } from "ts-morph";
+import { Node, ParameterDeclaration, ts } from "ts-morph";
 import ParameterDoc from "../models/documentation/ParameterDoc";
+import type TsDocGenContext from '../models/context';
+import { TsDocGenDoc } from "..";
+import findTagForDoc from "./findTagForDoc";
+import type FunctionDoc from '../models/documentation/FunctionDoc';
+import type MethodDoc from '../models/documentation/MethodDoc';
+import type ConstructorDoc from '../models/documentation/ConstructorDoc';
+
+function createParameterDoc(parameter: ParameterDeclaration, context: TsDocGenContext, tags: TsDocGenDoc['tags'], parent: FunctionDoc | MethodDoc | ConstructorDoc) {
+    const doc = new ParameterDoc(parameter, context, parent);
+
+    const tag = findTagForDoc(tags, doc.name, 'param');
+
+    if (tag) doc.setDescription(tag.text);
+
+    return doc;
+}
 
 /**
  * Gets the call, index or construct signatures
  */
- function getParameters(node: Node, checker: TypeChecker) {
+function getParameters(node: Node, context: TsDocGenContext, tags: TsDocGenDoc['tags'], parent: FunctionDoc | MethodDoc | ConstructorDoc) {
     if (Node.isParameteredNode(node) || Node.isFunctionTypeNode(node)) {
         return node.getParameters().map((parameter) => {
-            return new ParameterDoc(parameter, checker);
+            return createParameterDoc(parameter, context, tags, parent);
         });
     }
 
@@ -15,10 +31,10 @@ import ParameterDoc from "../models/documentation/ParameterDoc";
         const [arrowFunction] = node.getChildrenOfKind(ts.SyntaxKind.ArrowFunction);
 
         return arrowFunction?.getParameters().map((parameter) => {
-            return new ParameterDoc(parameter, checker);
+            return createParameterDoc(parameter, context, tags, parent);
         }) ?? [];
     }
-
+   
     return [];
 }
 

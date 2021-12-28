@@ -8,6 +8,7 @@ export const ProjectEvents = {
 
 /** Events specific to the creation of `Doc` models. */
 export const DocEvents = {
+    CREATE_CONSTRUCTOR_DOC: "CREATE_CONSTRUCTOR_DOC",
     CREATE_CLASS_DOC: "CREATE_CLASS_DOC",
     CREATE_DOC: "CREATE_DOC",
     CREATE_ENUM_DOC: "CREATE_ENUM_DOC",

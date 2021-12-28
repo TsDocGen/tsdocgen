@@ -1,4 +1,5 @@
 import React from 'react';
+import { PropertyDoc } from '..';
 import { MethodDocJSON } from '../models/documentation/MethodDoc';
 import { DocUnionJSON, ProjectDocs } from './docs';
 
@@ -24,11 +25,11 @@ export interface PageProps {
 }
 
 export interface PropertiesComponentProps {
-    properties: DocUnionJSON['properties'];
+    properties: PropertyDoc[];
 }
 
 export interface PropertyComponentProps {
-    property: DocUnionJSON['properties'][0];
+    property: PropertyDoc;
 }
 
 export interface MethodsComponentProps {

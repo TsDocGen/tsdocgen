@@ -17,7 +17,10 @@ export const TypesFriendly: Record<DocType, string> = {
     'interface': 'interfaces',
     'type-alias': 'type aliases',
     'unknown': 'unknown',
-    'variable': 'variables'
+    'variable': 'variables',
+    'constructor': 'constructor',
+    'method': 'method',
+    'signature': 'signature'
 }
 
 /** Theme cache/registry */

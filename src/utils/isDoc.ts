@@ -1,8 +1,8 @@
 import { Node, Structure } from "ts-morph";
 import { ClassDoc } from "../models";
-import AbstractDoc from "../models/documentation/AbstractDoc";
+import BaseDoc from "../models/documentation/BaseDoc";
 
-export function isClassDoc(doc: AbstractDoc<string, Node, Structure>): doc is ClassDoc {
+export function isClassDoc(doc: BaseDoc<string, Node, Structure>): doc is ClassDoc {
     if (doc.type === "class") return true;
     return false;
 }

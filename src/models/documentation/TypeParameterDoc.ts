@@ -1,19 +1,44 @@
-import { TypeChecker, TypeParameterDeclaration, TypeParameterDeclarationStructure } from "ts-morph";
+import { TypeParameterDeclaration, TypeParameterDeclarationStructure } from "ts-morph";
 import EmitDocEvent from "../../decorators/EmitDocEvent";
-import AbstractDoc from "./AbstractDoc";
+import BaseDoc from "./BaseDoc";
+import type TsDocGenContext from '../context';
+import { BaseDocJSON } from "../..";
+
+export interface TypeParameterDocJSON extends BaseDocJSON<"type-parameter"> {
+    constraint?: string;
+    default?: string;
+}
 
 @EmitDocEvent('CREATE_TYPE_PARAMETER_DOC')
-class TypeParameterDoc extends AbstractDoc<"type-parameter", TypeParameterDeclaration, TypeParameterDeclarationStructure> {
+class TypeParameterDoc extends BaseDoc<"type-parameter", TypeParameterDeclaration, TypeParameterDeclarationStructure> {
 
-    constructor(node: TypeParameterDeclaration, checker: TypeChecker) {
-        super(node, "type-parameter", checker);
+    constructor(node: TypeParameterDeclaration, context: TsDocGenContext) {
+        super(node, "type-parameter", context);
     }
 
-    public override toJSON() {
+    public override toJSON(): TypeParameterDocJSON {
         return {
             ...super.toJSON(),
-            constraint: this.structure?.constraint,
-            default: this.structure?.default,
+            constraint: this.getConstraint(),
+            default: this.getDefault()
+        }
+    }
+
+    public getConstraint() {
+        if (typeof this.structure?.constraint === 'string') {
+            return this.structure?.constraint;
+        }
+        else {
+            return undefined;
+        }
+    }
+
+    public getDefault() {
+        if (typeof this.structure?.default === 'string') {
+            return this.structure?.default;
+        }
+        else {
+            return undefined;
         }
     }
 

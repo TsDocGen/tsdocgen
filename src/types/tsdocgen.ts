@@ -5,7 +5,7 @@ import {
 } from "typescript";
 import { DocUnion, DocUnionJSON } from "./docs";
 
-export interface AbstractDocJSON<T extends string = string> {
+export interface BaseDocJSON<T extends string = string> {
   type: T;
   name: string;
   isDefaultExport: boolean;

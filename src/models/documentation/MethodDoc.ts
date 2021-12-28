@@ -1,29 +1,32 @@
-import { MethodDeclaration, MethodDeclarationStructure, MethodSignature, MethodSignatureStructure, Node, PropertyDeclaration, PropertyDeclarationStructure, PropertySignature, PropertySignatureStructure, TypeChecker } from "ts-morph";
+import { MethodDeclaration, MethodDeclarationStructure, MethodSignature, MethodSignatureStructure, Node, PropertyDeclaration, PropertyDeclarationStructure, PropertySignature, PropertySignatureStructure } from "ts-morph";
 import EmitDocEvent from "../../decorators/EmitDocEvent";
-import { AbstractDocJSON } from "../../types/tsdocgen";
-import getParameters from "../../utils/getParameters";
-import AbstractDoc from "./AbstractDoc";
-import ParameterDoc from "./ParameterDoc";
+import { BaseDocJSON } from "../../types/tsdocgen";
+import BaseDoc from "./BaseDoc";
+import ParameterDoc, { ParameterDocJSON } from "./ParameterDoc";
+import type TsDocGenContext from '../context';
+import AddParameterDocs from "../../decorators/AddParameterDocs";
 
-export interface MethodDocJSON extends AbstractDocJSON<"method"> {
+export interface MethodDocJSON extends BaseDocJSON<"method"> {
     returnType: string;
-    isStatic: boolean;
     hasQuestionToken?: boolean;
     scope: string;
+    parameters: ParameterDocJSON[];
 }
 
+@AddParameterDocs
 @EmitDocEvent('CREATE_METHOD_DOC')
-class MethodDoc extends AbstractDoc<"method", MethodDeclaration | MethodSignature | PropertyDeclaration | PropertySignature, MethodDeclarationStructure | MethodSignatureStructure | PropertyDeclarationStructure | PropertySignatureStructure> {
-    public isStatic: boolean;
+class MethodDoc extends BaseDoc<"method", MethodDeclaration | MethodSignature | PropertyDeclaration | PropertySignature, MethodDeclarationStructure | MethodSignatureStructure | PropertyDeclarationStructure | PropertySignatureStructure> {
     public scope: string;
-    public parameters: ParameterDoc[];
+    public parameters!: ParameterDoc[];
 
-    constructor(node: MethodDeclaration | MethodSignature | PropertyDeclaration | PropertySignature, checker: TypeChecker) {
-        super(node, "method", checker);
+    constructor(node: MethodDeclaration | MethodSignature | PropertyDeclaration | PropertySignature, context: TsDocGenContext) {
+        super(node, "method", context);
 
-        this.isStatic = Node.isMethodDeclaration(node) || Node.isPropertyDeclaration(node) ? node.isStatic() : false;
-        this.scope = Node.isMethodDeclaration(node) || Node.isPropertyDeclaration(node) ? node.getScope() : '';
-        this.parameters = getParameters(node, checker);
+        this.scope = this.getScope();
+    }
+    
+    public getScope() {
+        return Node.isMethodDeclaration(this.node) || Node.isPropertyDeclaration(this.node) ? this.node.getScope() : '';
     }
 
     public override toString() {
@@ -34,13 +37,11 @@ class MethodDoc extends AbstractDoc<"method", MethodDeclaration | MethodSignatur
         const base = {
             ...super.toJSON(),
             returnType: this.getReturnType(),
-            isStatic: this.isStatic,
             hasQuestionToken: this.structure?.hasQuestionToken,
             scope: this.scope,
-            parameters: this.parameters.map((signature) => signature.toJSON()),
         }
 
-        return base;
+        return base as MethodDocJSON;
 
     }
 }

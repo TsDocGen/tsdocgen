@@ -1,6 +1,14 @@
-import { SyntaxKind, TypeChecker, VariableDeclaration, VariableDeclarationStructure, VariableStatement, VariableStatementStructure } from "ts-morph";
+import { SyntaxKind, VariableDeclaration, VariableDeclarationStructure, VariableStatement, VariableStatementStructure } from "ts-morph";
 import EmitDocEvent from "../../decorators/EmitDocEvent";
-import Doc from "./Doc";
+import Doc, { DocJSON } from "./Doc";
+import type TsDocGenContext from '../context';
+
+export interface VariableDocJSON extends DocJSON<"variable"> {
+    hasExclamationToken?: boolean;
+    returnType?: string;
+    exportKeyword?: string;
+    values: VariableDocJSON[]
+}
 
 @EmitDocEvent('CREATE_VARIABLE_DOC')
 class VariableDoc extends Doc<"variable", VariableDeclaration, VariableDeclarationStructure> {
@@ -9,22 +17,22 @@ class VariableDoc extends Doc<"variable", VariableDeclaration, VariableDeclarati
     private statementStructure: VariableStatementStructure | undefined;
     private values: VariableDoc[];
 
-    constructor(node: VariableDeclaration, checker: TypeChecker) {
-        super(node, "variable", checker);
+    constructor(node: VariableDeclaration, context: TsDocGenContext) {
+        super(node, "variable", context);
 
         this.statement = this.node.getVariableStatement();
         this.statementStructure = this.statement?.getStructure();
         this.values = this.getValues();
 
         this.statementStructure;
-        this.values;
+
     }
 
     public override toString() {
         return '';
     }
 
-    public override toJSON() {
+    public override toJSON(): VariableDocJSON {
         return {
             ...super.toJSON(),
             hasExclamationToken: this.structure?.hasExclamationToken,
@@ -32,6 +40,7 @@ class VariableDoc extends Doc<"variable", VariableDeclaration, VariableDeclarati
             isDefaultExport: this.node.isDefaultExport(),
             isExported: this.node.isExported(),
             exportKeyword: this.node.getExportKeyword()?.getText(),
+            values: this.values.map((value) => value.toJSON())
         }
     }
 
@@ -40,7 +49,7 @@ class VariableDoc extends Doc<"variable", VariableDeclaration, VariableDeclarati
 
         if (list) {
             return list.getChildrenOfKind(SyntaxKind.VariableDeclaration).map((variableDeclaration) => {
-                return new VariableDoc(variableDeclaration, this.checker);
+                return new VariableDoc(variableDeclaration, this.context);
             });
         }
         

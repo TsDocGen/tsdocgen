@@ -1,20 +1,35 @@
-import { ParameterDeclaration, ParameterDeclarationStructure, TypeChecker } from "ts-morph";
+import { ParameterDeclaration, ParameterDeclarationStructure } from "ts-morph";
 import EmitDocEvent from "../../decorators/EmitDocEvent";
-import AbstractDoc from "./AbstractDoc";
+import BaseDoc from "./BaseDoc";
+import type TsDocGenContext from '../context';
+import { BaseDocJSON } from "../..";
+import type FunctionDoc from './FunctionDoc';
+import type MethodDoc from './MethodDoc';
+import type ConstructorDoc from './ConstructorDoc';
+
+export interface ParameterDocJSON extends BaseDocJSON<"parameter"> {
+    hasOverrideKeyword?: boolean;
+    hasQuestionToken?: boolean;
+    isReadonly?: boolean;
+    scope?: string;
+}
 
 @EmitDocEvent('CREATE_PARAMETER_DOC')
-class ParameterDoc extends AbstractDoc<"parameter",ParameterDeclaration, ParameterDeclarationStructure> {
+class ParameterDoc extends BaseDoc<"parameter",ParameterDeclaration, ParameterDeclarationStructure, FunctionDoc | MethodDoc | ConstructorDoc> {
 
-    constructor(node: ParameterDeclaration, checker: TypeChecker) {
-        super(node, "parameter", checker);
+    constructor(node: ParameterDeclaration, context: TsDocGenContext, parent: FunctionDoc | MethodDoc | ConstructorDoc) {
+        super(node, "parameter", context, parent);
     }
 
-    public override toJSON() {
-        const { type, ...structure } = this.structure || {};
+    public override toJSON(): ParameterDocJSON {
+        const { hasOverrideKeyword, hasQuestionToken, isReadonly, scope } = this.structure || {};
+
         return {
             ...super.toJSON(),
-            ...structure,
-            tsType: type,
+            hasOverrideKeyword,
+            hasQuestionToken,
+            isReadonly,
+            scope,
         }
     }
 

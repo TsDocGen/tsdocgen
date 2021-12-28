@@ -3,6 +3,7 @@ import { ExportedDeclarations, Project, SourceFile, Node, SyntaxKind, TypeAliasD
 import { ProjectNameNotConfiguredError } from "../../errors";
 import { DocUnionJSON } from "../../types/docs";
 import { ProjectDeclarationsMap, SourceFileDeclarationMap, TsDocGenProjectJSON, TSDocGenProjectProps } from "../../types/tsdocgen";
+import TsDocGenContext from "../context";
 import ClassDoc from "../documentation/ClassDoc";
 import EnumDoc from "../documentation/EnumDoc";
 import FunctionDoc from "../documentation/FunctionDoc";
@@ -18,13 +19,15 @@ class TsDocGenProject {
     public sourceFileDeclarationsMap: SourceFileDeclarationMap;
     public name: string;
     public json: TsDocGenProjectJSON;
-
+    public context: TsDocGenContext;
+    
     constructor(config: TSDocGenProjectProps) {
         this.config = config;
         this.tsProject = new Project({
             tsConfigFilePath: this.config.tsConfigFilePath,
         });
         this.checker = this.tsProject.getTypeChecker();
+        this.context = new TsDocGenContext(this.checker);
         this.sourceFileDeclarationsMap = this.createProject();
         this.name = this.config.projectName || this.config.packageJson.name || 'project';
         this.json = this.toJSON();
@@ -97,19 +100,19 @@ class TsDocGenProject {
 
         switch (kind) {
             case SyntaxKind.ClassDeclaration:
-                return new ClassDoc(node as ClassDeclaration, this.checker);
+                return new ClassDoc(node as ClassDeclaration, this.context);
             case SyntaxKind.FunctionDeclaration:
-                return new FunctionDoc(node as FunctionDeclaration, this.checker);
+                return new FunctionDoc(node as FunctionDeclaration, this.context);
             case SyntaxKind.TypeAliasDeclaration:
-                return new TypeAliasDoc(node as TypeAliasDeclaration, this.checker);
+                return new TypeAliasDoc(node as TypeAliasDeclaration, this.context);
             case SyntaxKind.InterfaceDeclaration:
-                return new InterfaceDoc(node as InterfaceDeclaration, this.checker);
+                return new InterfaceDoc(node as InterfaceDeclaration, this.context);
             case SyntaxKind.EnumDeclaration:
-                return new EnumDoc(node as EnumDeclaration, this.checker);
+                return new EnumDoc(node as EnumDeclaration, this.context);
             case SyntaxKind.VariableDeclaration:
-                return new VariableDoc(node as VariableDeclaration, this.checker);
+                return new VariableDoc(node as VariableDeclaration, this.context);
             default:
-                return new UnknownDoc(node, this.checker);
+                return new UnknownDoc(node, this.context);
         }
     }
 

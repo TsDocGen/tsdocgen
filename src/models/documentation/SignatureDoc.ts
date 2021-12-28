@@ -1,14 +1,15 @@
-import { CallSignatureDeclaration, IndexSignatureDeclaration, ConstructSignatureDeclaration, TypeChecker } from "ts-morph";
+import { CallSignatureDeclaration, IndexSignatureDeclaration, ConstructSignatureDeclaration } from "ts-morph";
 import EmitDocEvent from "../../decorators/EmitDocEvent";
-import AbstractDoc from "./AbstractDoc";
+import BaseDoc from "./BaseDoc";
+import type TsDocGenContext from '../context';
 
 type Signature = CallSignatureDeclaration | IndexSignatureDeclaration | ConstructSignatureDeclaration;
 
 @EmitDocEvent('CREATE_SIGNATURE_DOC')
-class SignatureDoc extends AbstractDoc<"signature", Signature> {
+class SignatureDoc extends BaseDoc<"signature", Signature> {
 
-    constructor(node: Signature, checker: TypeChecker) {
-        super(node, "signature", checker);
+    constructor(node: Signature, context: TsDocGenContext) {
+        super(node, "signature", context);
     }
 
     public override toString() {

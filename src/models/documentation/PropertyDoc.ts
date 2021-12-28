@@ -1,9 +1,19 @@
-import { Node, PropertyDeclaration, PropertyDeclarationStructure, PropertySignature, PropertySignatureStructure, ts, TypeChecker } from "ts-morph";
+import { Node, PropertyDeclaration, PropertyDeclarationStructure, PropertySignature, PropertySignatureStructure, ts } from "ts-morph";
 import EmitDocEvent from "../../decorators/EmitDocEvent";
-import AbstractDoc from "./AbstractDoc";
+import BaseDoc from "./BaseDoc";
+import MethodDoc from "./MethodDoc";
+import type TsDocGenContext from '../context';
+import { BaseDocJSON } from "../../types/tsdocgen";
+
+export interface PropertyDocJSON extends BaseDocJSON<"property"> {
+    hasQuestionToken?: boolean;
+    isReadonly?: boolean;
+    returnType?: string;
+    scope?: string;
+}
 
 @EmitDocEvent('CREATE_PROPERTY_DOC')
-class PropertyDoc extends AbstractDoc<
+class PropertyDoc extends BaseDoc<
     "property",
     PropertyDeclaration | PropertySignature, 
     PropertyDeclarationStructure | PropertySignatureStructure
@@ -11,8 +21,8 @@ class PropertyDoc extends AbstractDoc<
     public isArrowFunction: boolean;
     public scope: string | undefined;
 
-    constructor(node: PropertyDeclaration | PropertySignature, checker: TypeChecker) {
-        super(node, "property", checker);
+    constructor(node: PropertyDeclaration | PropertySignature, context: TsDocGenContext) {
+        super(node, "property", context);
 
         this.isArrowFunction = this.checkIfArrowFunction();
 
@@ -21,7 +31,11 @@ class PropertyDoc extends AbstractDoc<
         }
     }
 
-    public override toJSON() {
+    public convertToMethodDoc() {
+        return new MethodDoc(this.node, this.context)
+    }
+
+    public override toJSON(): PropertyDocJSON {
         return {
             ...super.toJSON(),
             hasQuestionToken: this.structure?.hasQuestionToken,

@@ -1,12 +1,20 @@
 import { parse } from "comment-parser";
-import { JSDoc, Structure, Node, TypeFormatFlags, SyntaxKind, Symbol, TypeChecker, Type } from "ts-morph";
-import { AbstractDocJSON, TsDocGenDoc } from "../../types/tsdocgen";
+import { JSDoc, Structure, Node, TypeFormatFlags, SyntaxKind, Symbol, Type } from "ts-morph";
+import { BaseDocJSON, TsDocGenDoc } from "../../types/tsdocgen";
 import isNodeWithStructure from "../../utils/isNodeWithStructure";
+import type TsDocGenContext from '../context';
 
 /**
  * The base representation for all documentation nodes.
+ * @param {Node} node The ts-morph node
+ * @param {string} type The type of node such as `method`
+ * @param {TsDocGenContext} context The TsDocGenContext. 
+ * @param {BaseDoc} parent The parent/owner doc.
+ * @typeParam T The document type
+ * @typeParam N Generic Node type from `ts-morph`
+ * @typeParam S Generic Structure type from `ts-morph`
  */
-class AbstractDoc<T extends string, N extends Node, S extends Structure = Structure> {
+class BaseDoc<T extends string, N extends Node, S extends Structure = Structure, P extends BaseDoc<string, Node, Structure, any> | undefined = undefined> {
     public description!: string;
     public tags!: TsDocGenDoc['tags'];
     public node: N;
@@ -16,18 +24,20 @@ class AbstractDoc<T extends string, N extends Node, S extends Structure = Struct
     public type: T;
     public isDefaultExport: boolean;
     public symbol: Symbol | undefined;
-    public checker: TypeChecker;
     public tsType: Type | undefined;
+    public context: TsDocGenContext;
+    public parent?: P = undefined;
 
-    constructor(node: N, type: T, checker: TypeChecker) {
+    constructor(node: N, type: T, context: TsDocGenContext, parent?: P) {
         // Variables
         this.node = node;
+        this.parent = parent;
+        this.context = context;
+        this.type = type;
         this.symbol = node.getSymbol();
-        this.checker = checker;
         this.name = this.getName();
         this.kind = this.node.getKindName();
         this.structure = this.getStructure();
-        this.type = type;
         this.isDefaultExport = this.getIsDefaultExport();
         this.tsType = this.symbol?.getTypeAtLocation(node)
 
@@ -38,7 +48,7 @@ class AbstractDoc<T extends string, N extends Node, S extends Structure = Struct
     // ----------- Public Methods -----------
 
     /** Returns a JSON representation of a doc. */
-    public toJSON(): AbstractDocJSON<T> & Record<string, any> {
+    public toJSON(): BaseDocJSON<T> & Record<string, any> {
         return {
             type: this.type,
             name: this.name,
@@ -75,7 +85,17 @@ class AbstractDoc<T extends string, N extends Node, S extends Structure = Struct
         return this.name;
     }
 
-    // Protected
+    /** Sets the description for the doc. */
+    public setDescription(description: string) {
+        this.description = description;
+    }
+
+    /** Sets the tags for the doc. */
+    public setTags(tags: TsDocGenDoc['tags']) {
+        this.tags = tags;
+    }
+
+    // ----------- Protected Methods -----------
 
     protected getJSDocs = () => {
         if (Node.isJSDocableNode(this.node)) {
@@ -154,4 +174,4 @@ class AbstractDoc<T extends string, N extends Node, S extends Structure = Struct
     }
 }
 
-export default AbstractDoc;
+export default BaseDoc;

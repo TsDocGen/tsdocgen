@@ -1,11 +1,12 @@
-import { Node, TypeChecker } from "ts-morph";
+import { Node } from "ts-morph";
 import SignatureDoc from "../models/documentation/SignatureDoc";
 import { ClassType } from "../types/tsdocgen";
+import type TsDocGenContext from '../models/context';
 
 /**
  * Gets the call, index or construct signatures
  */
-function getSignatures(node: Node, checker: TypeChecker) {
+function getSignatures(node: Node, context: TsDocGenContext) {
     if (Node.isTypeElementMemberedNode(node)) {
         const signatures = [
             ...node.getCallSignatures(), 
@@ -13,7 +14,7 @@ function getSignatures(node: Node, checker: TypeChecker) {
             ...node.getConstructSignatures()
         ];
         return signatures.map((signature) => {
-            return new SignatureDoc(signature, checker);
+            return new SignatureDoc(signature, context);
         });
     }
 
