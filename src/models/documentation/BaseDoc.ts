@@ -39,10 +39,11 @@ class BaseDoc<T extends string, N extends Node, S extends Structure = Structure,
         this.kind = this.node.getKindName();
         this.structure = this.getStructure();
         this.isDefaultExport = this.getIsDefaultExport();
-        this.tsType = this.symbol?.getTypeAtLocation(node)
+        this.tsType = this.symbol?.getTypeAtLocation(node);
 
         // Effects
         this.setDescriptionAndTags();
+        this.addToSymbolCache();
     }
 
     // ----------- Public Methods -----------
@@ -105,6 +106,12 @@ class BaseDoc<T extends string, N extends Node, S extends Structure = Structure,
     }
 
     // ----------- Private Methods -----------
+
+    private addToSymbolCache = () => {
+        if (this.symbol) {
+            this.context.symbolCache.add(this.symbol, this);
+        }
+    }
 
     private getIsDefaultExport = () => {
         if (Node.isExportableNode(this.node)) {
