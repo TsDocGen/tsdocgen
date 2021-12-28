@@ -34,7 +34,7 @@ function AddTypeParameterDocs<T extends ClassType>(constructor: T) {
 
             const target = this as any;
 
-            target.typeParameters = getTypeParameters(node, args[2], target.tags);
+            target.typeParameters = getTypeParameters(node, args[1], target.tags);
 
             const toJSON = target.toJSON.bind(this);
 

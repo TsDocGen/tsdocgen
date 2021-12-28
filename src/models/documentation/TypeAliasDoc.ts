@@ -16,10 +16,6 @@ class TypeAliasDoc extends Doc<"type-alias",TypeAliasDeclaration, TypeAliasDecla
 
     constructor(node: TypeAliasDeclaration, context: TsDocGenContext) {
         super(node, "type-alias", context);
-
-        // console.log(this.node.getType().getConstructSignatures());
-        // this.node.getType().getCallSignatures()
-        // console.log(this.toJSON());
     }
 
     public override toString() {

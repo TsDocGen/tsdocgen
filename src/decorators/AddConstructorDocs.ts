@@ -28,7 +28,7 @@ function AddConstructorDocs<T extends ClassType>(constructor: T) {
 
             const target = this as any;
 
-            target.constructors = getConstructors(node, args[2], target);
+            target.constructors = getConstructors(node, args[1], target);
 
             const toJSON = target.toJSON.bind(this);
 

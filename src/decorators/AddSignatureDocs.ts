@@ -33,7 +33,7 @@ function AddSignatureDocs<T extends ClassType>(constructor: T) {
 
             const target = this as any;
 
-            target.signatures = getSignatures(node, args[2]);
+            target.signatures = getSignatures(node, args[1]);
 
             const toJSON = target.toJSON.bind(this);
 

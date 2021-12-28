@@ -66,7 +66,7 @@ function AddPropertiesDocs<T extends ClassType>(constructor: T) {
 
             const target = this as any;
 
-            const { methods, properties } = getPropertiesAndMethods(node, args[2]);
+            const { methods, properties } = getPropertiesAndMethods(node, args[1]);
 
             target.properties = [...(target.properties || []), ...properties];
             target.methods = [...(target.methods || []), ...methods];

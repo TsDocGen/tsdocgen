@@ -1,5 +1,5 @@
 import { Node, Structure, Symbol } from "ts-morph";
-import BaseDoc from "../models/documentation/BaseDoc";
+import type BaseDoc from "../models/documentation/BaseDoc";
 
 class SymbolCache {
     private cache = new Map<Symbol, BaseDoc<string, Node, Structure, any>>()
