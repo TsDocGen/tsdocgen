@@ -10,7 +10,8 @@ export interface AppComponentProps {
 };
 
 export interface LayoutProps {
-    docs: DocUnionJSON[]
+    projectName: string;
+    docs: DocUnionJSON[];
 }
 
 export interface DocProps {

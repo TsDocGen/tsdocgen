@@ -18,9 +18,9 @@ class TsDocGenTheme<C extends TsDocGenThemeComponents = TsDocGenThemeComponents,
         this.components.set(name, component);
     }
 
-    public getComponent(name: K): C[K] | undefined {
+    public getComponent<S extends K = K>(name: S): C[S] | undefined {
         if (this.components.has(name)) {
-            return this.components.get(name) as C[K];
+            return this.components.get(name) as C[S];
         }
         return undefined;
     }
