@@ -40,7 +40,7 @@ export interface MethodComponentProps {
     method: MethodDocJSON;
 }
 
-export interface TsDocGenTheme {
+export interface TsDocGenThemeComponents extends ObjectConstructor {
     Doc: React.ComponentType<DocProps>;
     Layout: React.ComponentType<LayoutProps>;
     Methods: React.ComponentType<MethodsComponentProps>;

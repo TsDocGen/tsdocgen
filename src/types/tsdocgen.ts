@@ -3,6 +3,7 @@ import { ExportedDeclarations, SourceFile } from "ts-morph";
 import {
   CompilerOptions,
 } from "typescript";
+import { TsDocGenTheme } from "../models/themes";
 import { DocUnion, DocUnionJSON } from "./docs";
 
 export interface BaseDocJSON<T extends string = string> {
@@ -72,7 +73,7 @@ export type TSDocGenConfig = {
   /** 
    * The name or location of the theme. 
    */
-  theme: string;
+  theme: TsDocGenTheme;
 };
 
 export type TsConfig = CompilerOptions & {

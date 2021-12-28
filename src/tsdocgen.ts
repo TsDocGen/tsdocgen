@@ -2,7 +2,7 @@ import Config from "./models/configuration";
 import EmitEvent from "./decorators/EmitEvent";
 import TsDocGenProject from "./models/project";
 import TsDocGenNavigation from "./models/navigation";
-import TsDocGenThemeFinder from "./models/themes";
+import { TsDocGenThemeFinder, TsDocGenThemeValidator } from "./models/themes";
 import { UrlFactory } from "./types/tsdocgen";
 
 /**
@@ -19,7 +19,9 @@ class TSDocGen {
 
     public navigation: TsDocGenNavigation;
 
-    public theme_finder: TsDocGenThemeFinder;
+    public themeValidator: TsDocGenThemeValidator;
+
+    private themeFinder: TsDocGenThemeFinder;
 
     /**
      * @param urlFactory The function for determining the url for each doc. Defaults to `/${projectName}/${docType}/${docName}.html`
@@ -27,7 +29,8 @@ class TSDocGen {
     constructor(urlFactory?: UrlFactory) {
         this.projects = this.generateDocumentation();
         this.navigation = new TsDocGenNavigation(this.projects, this.config, urlFactory);
-        this.theme_finder = new TsDocGenThemeFinder(this.config);
+        this.themeValidator = new TsDocGenThemeValidator(this.config);
+        this.themeFinder = new TsDocGenThemeFinder(this.config);
     }
 
     // ----------- Public Methods -----------
@@ -48,6 +51,9 @@ class TSDocGen {
         return result;
     }
 
+    public getCurrentTheme() {
+        return this.themeFinder.getCurrentTheme();
+    }
 }
 
 export default TSDocGen;
