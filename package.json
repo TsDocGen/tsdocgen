@@ -1,6 +1,6 @@
 {
   "name": "@tsdocgen/core",
-  "version": "0.0.39",
+  "version": "0.0.40",
   "description": "Documentation generator for typescript",
   "main": "index.js",
   "types": "index.d.js",
