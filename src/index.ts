@@ -4,7 +4,6 @@ export * from './types/tsdocgen';
 export * from './types/docs';
 export * from './types/theme';
 export * from './models';
-export { TsDocGenTheme } from './models/themes'
 export * from './utils/isDoc';
 export * from './utils/isDocJson';
 export { default } from './tsdocgen';

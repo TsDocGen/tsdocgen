@@ -1,3 +1,5 @@
+const { default: AntDesignTheme } = require('@tsdocgen/themes/ant-design');
+
 const config = {
     outDir: 'docs',
     projects: [{
@@ -10,7 +12,7 @@ const config = {
         exportedDeclarationsOnly: true,
         readme: 'README.md',
     }],
-    theme: 'ant-design'
+    theme: AntDesignTheme
 };
 
 module.exports = config;

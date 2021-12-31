@@ -2,8 +2,11 @@ import Config from "./models/configuration";
 import EmitEvent from "./decorators/EmitEvent";
 import TsDocGenProject from "./models/project";
 import TsDocGenNavigation from "./models/navigation";
-import { TsDocGenThemeFinder, TsDocGenThemeValidator } from "./models/themes";
 import { UrlFactory } from "./types/tsdocgen";
+import getThemeCache from "./theme/getThemeCache";
+import { resolve } from "path";
+import TsDocGenTheme from "./theme/Theme";
+import { TSDOCGEN_CONFIG_NAME } from "./constants";
 
 /**
  * The TSDocGen Application. Handles traversing source files and converting them to
@@ -19,18 +22,15 @@ class TSDocGen {
 
     public navigation: TsDocGenNavigation;
 
-    public themeValidator: TsDocGenThemeValidator;
-
-    private themeFinder: TsDocGenThemeFinder;
-
     /**
      * @param urlFactory The function for determining the url for each doc. Defaults to `/${projectName}/${docType}/${docName}.html`
      */
     constructor(urlFactory?: UrlFactory) {
         this.projects = this.generateDocumentation();
         this.navigation = new TsDocGenNavigation(this.projects, this.config, urlFactory);
-        this.themeValidator = new TsDocGenThemeValidator(this.config);
-        this.themeFinder = new TsDocGenThemeFinder(this.config);
+
+        // Effects
+        this.validateTheme(this.config.tsDocGenConfig.theme);
     }
 
     // ----------- Public Methods -----------
@@ -51,8 +51,28 @@ class TSDocGen {
         return result;
     }
 
-    public getCurrentTheme() {
-        return this.themeFinder.getCurrentTheme();
+    public getCurrentTheme = () => {
+        return getThemeCache().getCurrentTheme();
+    }
+
+    public getCurrentThemeName = () => {
+        return this.getCurrentTheme().name;
+    }
+
+    public getCurrentThemePath = () => {
+        const name = this.getCurrentTheme().name;
+
+        return resolve(process.cwd(), 'node_modules', name);
+    }
+    
+    public getTsDocGenConfigPath = () => {
+        return resolve(process.cwd(), TSDOCGEN_CONFIG_NAME);
+    }
+
+    public validateTheme(theme: TsDocGenTheme) {
+        if (!(theme instanceof TsDocGenTheme)) {
+            throw new Error('Not a valid theme');
+        }
     }
 }
 

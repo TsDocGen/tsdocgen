@@ -1,6 +1,9 @@
-import TSDocGen from './../src/tsdocgen';
-import { inspect } from 'util'
+import TSDocGen from '@tsdocgen/core';
+import getThemeCache from '@tsdocgen/core/theme/getThemeCache';
+import { inspect } from 'util';
 const App = new TSDocGen();
+
+console.log(getThemeCache().getCurrentTheme());
 
 App.projects.forEach((project) => {
     project.forEachDoc((doc) => {

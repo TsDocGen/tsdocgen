@@ -1,10 +1,10 @@
 import type { JSONSchemaForNPMPackageJsonFiles } from "@schemastore/package";
-import { ExportedDeclarations, SourceFile } from "ts-morph";
-import {
+import type { ExportedDeclarations, SourceFile } from "ts-morph";
+import type {
   CompilerOptions,
 } from "typescript";
-import { TsDocGenTheme } from "../models/themes";
-import { DocUnion, DocUnionJSON } from "./docs";
+import type TsDocGenTheme from "../theme/Theme";
+import type { DocUnion, DocUnionJSON } from "./docs";
 
 export interface BaseDocJSON<T extends string = string> {
   type: T;

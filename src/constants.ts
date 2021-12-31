@@ -1,4 +1,4 @@
-import { TsDocGenTheme } from "./models/themes";
+import TsDocGenTheme from "./theme/Theme";
 import { DocType } from "./types/docs";
 
 export const TSDOCGEN_CONFIG_NAME = 'tsdocgen.config.js';
