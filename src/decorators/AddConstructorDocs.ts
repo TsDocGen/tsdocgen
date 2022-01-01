@@ -9,8 +9,8 @@ import type ClassDoc from "../models/documentation/ClassDoc";
  */
 function getConstructors(node: Node, context: TsDocGenContext, sourceFileRelativePath: string, parent: ClassDoc) {
     if (Node.isClassLikeDeclarationBase(node)) {
-        return node.getConstructors().map((constructor) => {
-            return new ConstructorDoc(constructor, context, sourceFileRelativePath, parent);
+        return node.getConstructors().map((constructor, index) => {
+            return new ConstructorDoc(constructor, context, sourceFileRelativePath, parent, index);
         });
     }
     return [];

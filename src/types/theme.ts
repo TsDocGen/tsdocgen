@@ -1,6 +1,9 @@
 import type React from 'react';
 import type { MethodDocJSON } from '../models/documentation/MethodDoc';
 import type { PropertyDocJSON } from '../models/documentation/PropertyDoc';
+import type { TsDocGenDocPageJSON } from '../models/page/DocPage';
+import type { TsDocGenModulePageJSON } from '../models/page/ModulePage';
+import { TsDocGenReadMePageJSON } from '../models/page/ReadMePage';
 import type { DocUnionJSON, ProjectDocs } from './docs';
 
 /** Base component props for the `App` component for a theme. */
@@ -25,6 +28,18 @@ export interface PageProps {
     theme: string;
 }
 
+export interface ReadMePageComponentProps {
+    page: TsDocGenReadMePageJSON;
+}
+
+export interface DocPageComponentProps {
+    page: TsDocGenDocPageJSON;
+}
+
+export interface ModulePageComponentProps {
+    page: TsDocGenModulePageJSON;
+}
+
 export interface PropertiesComponentProps {
     properties: PropertyDocJSON[];
 }
@@ -45,7 +60,9 @@ export type TsDocGenThemeComponents = {
     Layout: React.ComponentType<LayoutProps>;
     Methods: React.ComponentType<MethodsComponentProps>;
     Method: React.ComponentType<MethodComponentProps>;
-    Page: React.ComponentType<PageProps>;
+    DocPage: React.ComponentType<DocPageComponentProps>;
+    ReadMePage: React.ComponentType<ReadMePageComponentProps>;
+    ModulePage: React.ComponentType<ModulePageComponentProps>;
     Properties: React.ComponentType<PropertiesComponentProps>;
     Property: React.ComponentType<PropertyComponentProps>;
     Utils: Record<string, (...args: any[]) => any>

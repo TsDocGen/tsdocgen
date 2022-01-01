@@ -2,7 +2,7 @@ import { join } from "path";
 import { Project, Node, SyntaxKind, TypeAliasDeclaration, ClassDeclaration, EnumDeclaration, FunctionDeclaration, InterfaceDeclaration, VariableDeclaration, TypeChecker } from "ts-morph";
 import { ProjectNameNotConfiguredError } from "../../errors";
 import { TsDocGenPageJSONUnion, TsDocGenPageUnion } from "../../types/docs";
-import { ProjectDeclarationsMap, SourceFileDeclarationMap, TsDocGenProjectJSON, TSDocGenProjectProps } from "../../types/tsdocgen";
+import { ProjectDeclarationsMap, TsDocGenProjectJSON, TSDocGenProjectProps } from "../../types/tsdocgen";
 import TsDocGenContext from "../context";
 import ClassDoc from "../documentation/ClassDoc";
 import EnumDoc from "../documentation/EnumDoc";
@@ -29,7 +29,7 @@ class TsDocGenProject {
         });
         this.checker = this.tsProject.getTypeChecker();
         this.context = new TsDocGenContext(this.checker);
-        this.pages = this.createPages();
+        this.pages = [...this.createDocPages()];
         this.name = this.config.projectName || this.config.packageJson.name || 'project';
         this.json = this.toJSON();
     }
@@ -108,7 +108,7 @@ class TsDocGenProject {
      * Builds pages using the project configuration and source files.
      * @returns An array of pages.
      */
-    private createPages = () => {
+    private createDocPages = () => {
         const { name: projectName = this.config.projectName } = this.config.packageJson;
 
         if (!projectName) {
@@ -117,32 +117,20 @@ class TsDocGenProject {
 
         const exportedDeclarations = this.getDeclarations();
 
-        const sourceFileMap: SourceFileDeclarationMap = {};
-
         const pages: TsDocGenDocPage[] = [];
 
         for (const sourceFilePath in exportedDeclarations) {
             if (Object.prototype.hasOwnProperty.call(exportedDeclarations, sourceFilePath)) {
                 const sourceFileResult = exportedDeclarations[sourceFilePath];
 
-                const current = sourceFileMap[sourceFilePath] || {};
-
-                sourceFileMap[sourceFilePath] = {
-                    ...current,
-                }
-
                 for (const [, declarations] of sourceFileResult.exportedDeclarations) {
-
-
                     declarations.forEach((declaration) => {
                         const doc = this.buildDocs(declaration, sourceFileResult.relativePath);
-                        const page = new TsDocGenDocPage(sourceFileResult, doc);
+                        const page = new TsDocGenDocPage(sourceFileResult, doc, doc.type);
 
                         pages.push(page);
                     });
-
                 }
-
             }
         }
 

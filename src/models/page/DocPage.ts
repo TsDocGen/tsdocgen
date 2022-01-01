@@ -1,4 +1,5 @@
-import type { ExportableDoc, ExportableDocJSON, NonExportableDocType } from "../../types/docs";
+import { TypesFriendly } from "../../constants";
+import type { ExportableDoc, ExportableDocJSON, ExportableDocType, NonExportableDocType } from "../../types/docs";
 import type { SourceFileDeclarations } from "../../types/tsdocgen";
 import TsDocGenSourcePage, { TsDocGenSourcePageJSON } from "./SourcePage";
 
@@ -8,14 +9,14 @@ interface TableOfContentsItem {
 }
 
 export interface TsDocGenDocPageJSON extends TsDocGenSourcePageJSON<"DocPage"> {
-    docs: ExportableDocJSON;
+    doc: ExportableDocJSON;
     tableOfContents: Record<NonExportableDocType, TableOfContentsItem[]>;
 }
 
 /**
  * Represents a typescript module as a tsdocgen doc page.
  */
-class TsDocGenDocPage extends TsDocGenSourcePage<'DocPage'> {
+class TsDocGenDocPage<D extends ExportableDocType = ExportableDocType> extends TsDocGenSourcePage<'DocPage'> {
     private doc: ExportableDoc;
     private tableOfContents: Record<NonExportableDocType, TableOfContentsItem[]> = {
         constructor: [],
@@ -23,17 +24,19 @@ class TsDocGenDocPage extends TsDocGenSourcePage<'DocPage'> {
         property: [],
         method: []
     };
+    public docType: D;
 
-    constructor(source: SourceFileDeclarations, doc: ExportableDoc) {
-        super(source, "DocPage", `${doc.type}/${doc.name}`);
+    constructor(source: SourceFileDeclarations, doc: ExportableDoc, docType: D) {
+        super(source, "DocPage", `/${TypesFriendly[doc.type]}/${doc.name}`);
         this.doc = doc;
+        this.docType = docType;
         this.buildTableOfContents();
     }
 
     public override toJSON(): TsDocGenDocPageJSON {
         return {
             ...super.toJSON(),
-            docs: this.doc.toJSON(),
+            doc: this.doc.toJSON(),
             tableOfContents: { ...this.tableOfContents }
         }
     }
