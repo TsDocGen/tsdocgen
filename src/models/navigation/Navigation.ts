@@ -1,4 +1,3 @@
-import { TypesFriendly } from "../../constants";
 import { UrlFactory } from "../../types/tsdocgen";
 import Config from "../configuration";
 import type TsDocGenProject from "../project";
@@ -36,15 +35,15 @@ class TsDocGenNavigation {
     private buildMenu = () => {
         const menu: Record<string, Record<string, string>> = {};
 
-        this.projects.forEach((project) => {
-            project.forEachDoc((doc) => {
-                const { type, name } = doc;
+        this.projects.forEach(() => {
+            // project.forEachDoc((doc) => {
+            //     const { type, name } = doc;
     
-                menu[TypesFriendly[type]] = {
-                    ...menu[type],
-                    [name]: `/${project.name}/${type}/${name}`
-                }
-            });
+            //     menu[TypesFriendly[type]] = {
+            //         ...menu[type],
+            //         [name]: `/${project.name}/${type}/${name}`
+            //     }
+            // });
         });
         
         return menu;

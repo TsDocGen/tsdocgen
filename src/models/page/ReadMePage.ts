@@ -1,7 +1,14 @@
-import Page from "./Page";
+import Page, { TsDocGenPageJSON } from "./Page";
 
-class TsDocGenReadMePage extends Page {
-    public override toJSON = () => {
+export interface TsDocGenReadMePageJSON extends TsDocGenPageJSON<"ReadMePage"> {
+}
+
+class TsDocGenReadMePage extends Page<'ReadMePage'> {
+    constructor() {
+        super("ReadMePage", '');
+    }
+
+    public override toJSON(): TsDocGenReadMePageJSON {
         return {
             ...super.toJSON()
         }

@@ -1,5 +1,5 @@
 import type { ClassDocJSON } from "../models/documentation/ClassDoc";
-import { MethodDocJSON } from "../models/documentation/MethodDoc";
+import type { MethodDocJSON } from "../models/documentation/MethodDoc";
 import type { DocUnionJSON } from "../types/docs";
 
 export function isClassDocJSON(doc: DocUnionJSON): doc is ClassDocJSON {

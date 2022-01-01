@@ -30,7 +30,7 @@ class TSDocGen {
         this.navigation = new TsDocGenNavigation(this.projects, this.config, urlFactory);
 
         // Effects
-        this.validateTheme(this.config.tsDocGenConfig.theme);
+        // this.validateTheme(this.config.tsDocGenConfig.theme);
     }
 
     // ----------- Public Methods -----------

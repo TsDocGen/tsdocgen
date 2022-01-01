@@ -4,13 +4,14 @@ import type {
   CompilerOptions,
 } from "typescript";
 import type TsDocGenTheme from "../theme/Theme";
-import type { DocUnion, DocUnionJSON } from "./docs";
+import type { DocUnion, TsDocGenPageJSONUnion } from "./docs";
 
 export interface BaseDocJSON<T extends string = string> {
   id: string;
   type: T;
   name: string;
   isDefaultExport: boolean;
+  url: string;
   jsDoc: {
       description: string;
       tags: TsDocGenDoc['tags'];
@@ -113,7 +114,7 @@ export interface ProjectDeclarationsMap extends Record<string, SourceFileDeclara
 
 export interface TsDocGenProjectJSON {
   config: TSDocGenProjectProps;
-  sourceFileDeclarationsMap: Record<string, Record<string, DocUnionJSON>>;
+  pages: TsDocGenPageJSONUnion[];
 }
 
 /**

@@ -29,6 +29,7 @@ class BaseDoc<T extends string, N extends Node, S extends Structure = Structure,
     public context: TsDocGenContext;
     public sourceFileRelativePath: string;
     public startLineNumber: number;
+    public url: string;
     public parent?: P = undefined;
 
     constructor(node: N, type: T, context: TsDocGenContext, sourceFileRelativePath: string, parent?: P) {
@@ -46,6 +47,7 @@ class BaseDoc<T extends string, N extends Node, S extends Structure = Structure,
         this.structure = this.getStructure();
         this.isDefaultExport = this.getIsDefaultExport();
         this.tsType = this.symbol?.getTypeAtLocation(node);
+        this.url = `#${this.name}`;
 
         // Effects
         this.setDescriptionAndTags();
@@ -61,6 +63,7 @@ class BaseDoc<T extends string, N extends Node, S extends Structure = Structure,
             type: this.type,
             name: this.name,
             isDefaultExport: this.isDefaultExport,
+            url: this.url,
             jsDoc: {
                 description: this.description,
                 tags: this.tags,

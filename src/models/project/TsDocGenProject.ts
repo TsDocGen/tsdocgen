@@ -1,7 +1,7 @@
 import { join } from "path";
 import { Project, Node, SyntaxKind, TypeAliasDeclaration, ClassDeclaration, EnumDeclaration, FunctionDeclaration, InterfaceDeclaration, VariableDeclaration, TypeChecker } from "ts-morph";
 import { ProjectNameNotConfiguredError } from "../../errors";
-import { DocUnionJSON } from "../../types/docs";
+import { TsDocGenPageJSONUnion, TsDocGenPageUnion } from "../../types/docs";
 import { ProjectDeclarationsMap, SourceFileDeclarationMap, TsDocGenProjectJSON, TSDocGenProjectProps } from "../../types/tsdocgen";
 import TsDocGenContext from "../context";
 import ClassDoc from "../documentation/ClassDoc";
@@ -11,15 +11,16 @@ import InterfaceDoc from "../documentation/InterfaceDoc";
 import TypeAliasDoc from "../documentation/TypeAliasDoc";
 import UnknownDoc from "../documentation/UnknownDoc";
 import VariableDoc from "../documentation/VariableDoc";
+import TsDocGenDocPage from "../page/DocPage";
 
 class TsDocGenProject {
     public config: TSDocGenProjectProps;
+    public name: string;
+    private context: TsDocGenContext;
     private tsProject: Project;
     private checker: TypeChecker;
-    public sourceFileDeclarationsMap: SourceFileDeclarationMap;
-    public name: string;
-    public json: TsDocGenProjectJSON;
-    public context: TsDocGenContext;
+    private pages: TsDocGenPageUnion[];
+    private json: TsDocGenProjectJSON;
     
     constructor(config: TSDocGenProjectProps) {
         this.config = config;
@@ -28,7 +29,7 @@ class TsDocGenProject {
         });
         this.checker = this.tsProject.getTypeChecker();
         this.context = new TsDocGenContext(this.checker);
-        this.sourceFileDeclarationsMap = this.createProject();
+        this.pages = this.createPages();
         this.name = this.config.projectName || this.config.packageJson.name || 'project';
         this.json = this.toJSON();
     }
@@ -36,23 +37,9 @@ class TsDocGenProject {
     // ----------- Public Methods -----------
 
     public toJSON(): TsDocGenProjectJSON {
-        const sourceFileDeclarationsMap = Object.keys(this.sourceFileDeclarationsMap).reduce((map, path) => {
-            const docs = this.sourceFileDeclarationsMap[path];
-
-            return {
-                ...map,
-                [path]: Object.keys(docs).reduce((map, name) => {
-                    return {
-                        ...map,
-                        [name]: docs[name].toJSON()
-                    }
-                }, {} as Record<string, DocUnionJSON>)
-            }
-        }, {} as Record<string, Record<string, DocUnionJSON>>);
-
         return {
             config: this.config,
-            sourceFileDeclarationsMap: sourceFileDeclarationsMap,
+            pages: this.pages.map((page) => page.toJSON()),
         }
     }
 
@@ -60,31 +47,11 @@ class TsDocGenProject {
      * Executes a callback for each source file
      * @param callback The callback too be called for each source file
      */
-    public forEachSourceFile(callback: (sourceFile: Record<string, DocUnionJSON>, config: TSDocGenProjectProps, path: string) => void) {
-        const { config, sourceFileDeclarationsMap } = this.json;
+    public forEachPage(callback: (page: TsDocGenPageJSONUnion, config: TSDocGenProjectProps) => void) {
+        const { config, pages } = this.json;
 
-        for (const path in sourceFileDeclarationsMap) {
-            if (Object.prototype.hasOwnProperty.call(sourceFileDeclarationsMap, path)) {
-                const sourceFile = sourceFileDeclarationsMap[path];
-
-                callback(sourceFile, config, path);
-            }
-        }
-    }
-
-    /**
-     * Executes a callback for each doc.
-     * @param callback The callback too be called for each doc
-     */
-    public forEachDoc(callback: (doc: DocUnionJSON, config: TSDocGenProjectProps, sourceFile: Record<string, DocUnionJSON>, path: string) => void) {
-        this.forEachSourceFile((sourceFile, config, path) => {
-            for (const docName in sourceFile) {
-                if (Object.prototype.hasOwnProperty.call(sourceFile, docName)) {
-                    const doc = sourceFile[docName];
-
-                    callback(doc, config, sourceFile, path);
-                }
-            }
+        pages.forEach((page) => {
+            callback(page, config);
         });
     }
 
@@ -117,7 +84,7 @@ class TsDocGenProject {
     }
 
     private getDeclarations = (): ProjectDeclarationsMap => {
-        const map: ProjectDeclarationsMap= {};
+        const map: ProjectDeclarationsMap = {};
 
         const sourceFiles = this.tsProject.addSourceFilesAtPaths([this.config.entryPoint]);
 
@@ -138,11 +105,10 @@ class TsDocGenProject {
     }
 
     /**
-     * Builds an AST tree for a given typescript project.
-     * @param project A project config
-     * @returns The project name and the tree.
+     * Builds pages using the project configuration and source files.
+     * @returns An array of pages.
      */
-    private createProject = (): SourceFileDeclarationMap => {
+    private createPages = () => {
         const { name: projectName = this.config.projectName } = this.config.packageJson;
 
         if (!projectName) {
@@ -152,6 +118,8 @@ class TsDocGenProject {
         const exportedDeclarations = this.getDeclarations();
 
         const sourceFileMap: SourceFileDeclarationMap = {};
+
+        const pages: TsDocGenDocPage[] = [];
 
         for (const sourceFilePath in exportedDeclarations) {
             if (Object.prototype.hasOwnProperty.call(exportedDeclarations, sourceFilePath)) {
@@ -163,24 +131,22 @@ class TsDocGenProject {
                     ...current,
                 }
 
-                for (const [name, declarations] of sourceFileResult.exportedDeclarations) {
-                    console.log(sourceFileResult.relativePath);
-                    console.log(declarations[0].getStartLineNumber());
-                    const doc = this.buildDocs(declarations[0], sourceFileResult.relativePath);
+                for (const [, declarations] of sourceFileResult.exportedDeclarations) {
 
-                    const docName = name === 'default' ? doc.name : name;
 
-                    const current = sourceFileMap[sourceFilePath] || {};
+                    declarations.forEach((declaration) => {
+                        const doc = this.buildDocs(declaration, sourceFileResult.relativePath);
+                        const page = new TsDocGenDocPage(sourceFileResult, doc);
 
-                    sourceFileMap[sourceFilePath] = {
-                        ...current,
-                        [docName]: doc,
-                    }
+                        pages.push(page);
+                    });
+
                 }
+
             }
         }
 
-        return sourceFileMap;
+        return pages;
     }
 }
 
