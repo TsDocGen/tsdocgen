@@ -6,7 +6,7 @@ import type TsDocGenContext from '../models/context';
 /**
  * Gets the call, index or construct signatures
  */
-function getSignatures(node: Node, context: TsDocGenContext) {
+function getSignatures(node: Node, context: TsDocGenContext, sourceFileRelativePath: string) {
     if (Node.isTypeElementMemberedNode(node)) {
         const signatures = [
             ...node.getCallSignatures(), 
@@ -14,7 +14,7 @@ function getSignatures(node: Node, context: TsDocGenContext) {
             ...node.getConstructSignatures()
         ];
         return signatures.map((signature) => {
-            return new SignatureDoc(signature, context);
+            return new SignatureDoc(signature, context, sourceFileRelativePath);
         });
     }
 
@@ -33,7 +33,7 @@ function AddSignatureDocs<T extends ClassType>(constructor: T) {
 
             const target = this as any;
 
-            target.signatures = getSignatures(node, args[1]);
+            target.signatures = getSignatures(node, args[1], args[2]);
 
             const toJSON = target.toJSON.bind(this);
 

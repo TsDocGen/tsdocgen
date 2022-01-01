@@ -8,8 +8,8 @@ type Signature = CallSignatureDeclaration | IndexSignatureDeclaration | Construc
 @EmitDocEvent('CREATE_SIGNATURE_DOC')
 class SignatureDoc extends BaseDoc<"signature", Signature> {
 
-    constructor(node: Signature, context: TsDocGenContext) {
-        super(node, "signature", context);
+    constructor(node: Signature, context: TsDocGenContext, sourceFileRelativePath: string) {
+        super(node, "signature", context, sourceFileRelativePath);
     }
 
     public override toString() {

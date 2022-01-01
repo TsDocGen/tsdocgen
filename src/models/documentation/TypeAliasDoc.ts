@@ -14,8 +14,8 @@ export interface TypeAliasDocJSON extends DocJSON<"type-alias"> {
 class TypeAliasDoc extends Doc<"type-alias",TypeAliasDeclaration, TypeAliasDeclarationStructure> {
     public typeParameters!: TypeParameterDoc[];
 
-    constructor(node: TypeAliasDeclaration, context: TsDocGenContext) {
-        super(node, "type-alias", context);
+    constructor(node: TypeAliasDeclaration, context: TsDocGenContext, sourceFileRelativePath: string) {
+        super(node, "type-alias", context, sourceFileRelativePath);
     }
 
     public override toString() {

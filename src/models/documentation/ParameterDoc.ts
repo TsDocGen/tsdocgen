@@ -17,8 +17,8 @@ export interface ParameterDocJSON extends BaseDocJSON<"parameter"> {
 @EmitDocEvent('CREATE_PARAMETER_DOC')
 class ParameterDoc extends BaseDoc<"parameter",ParameterDeclaration, ParameterDeclarationStructure, FunctionDoc | MethodDoc | ConstructorDoc> {
 
-    constructor(node: ParameterDeclaration, context: TsDocGenContext, parent: FunctionDoc | MethodDoc | ConstructorDoc) {
-        super(node, "parameter", context, parent);
+    constructor(node: ParameterDeclaration, context: TsDocGenContext, sourceFileRelativePath: string, parent: FunctionDoc | MethodDoc | ConstructorDoc) {
+        super(node, "parameter", context, sourceFileRelativePath, parent);
     }
 
     public override toJSON(): ParameterDocJSON {

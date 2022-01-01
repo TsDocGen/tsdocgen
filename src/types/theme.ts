@@ -1,6 +1,6 @@
 import type React from 'react';
 import type { MethodDocJSON } from '../models/documentation/MethodDoc';
-import type PropertyDoc from '../models/documentation/PropertyDoc';
+import type { PropertyDocJSON } from '../models/documentation/PropertyDoc';
 import type { DocUnionJSON, ProjectDocs } from './docs';
 
 /** Base component props for the `App` component for a theme. */
@@ -26,11 +26,11 @@ export interface PageProps {
 }
 
 export interface PropertiesComponentProps {
-    properties: PropertyDoc[];
+    properties: PropertyDocJSON[];
 }
 
 export interface PropertyComponentProps {
-    property: PropertyDoc;
+    property: PropertyDocJSON;
 }
 
 export interface MethodsComponentProps {

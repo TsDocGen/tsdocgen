@@ -21,8 +21,8 @@ class PropertyDoc extends BaseDoc<
     public isArrowFunction: boolean;
     public scope: string | undefined;
 
-    constructor(node: PropertyDeclaration | PropertySignature, context: TsDocGenContext) {
-        super(node, "property", context);
+    constructor(node: PropertyDeclaration | PropertySignature, context: TsDocGenContext, sourceFileRelativePath: string) {
+        super(node, "property", context, sourceFileRelativePath);
 
         this.isArrowFunction = this.checkIfArrowFunction();
 
@@ -32,7 +32,7 @@ class PropertyDoc extends BaseDoc<
     }
 
     public convertToMethodDoc() {
-        return new MethodDoc(this.node, this.context)
+        return new MethodDoc(this.node, this.context, this.sourceFileRelativePath)
     }
 
     public override toJSON(): PropertyDocJSON {

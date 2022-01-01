@@ -8,8 +8,8 @@ export interface EnumDocJSON extends DocJSON<"enum"> {}
 @EmitDocEvent('CREATE_ENUM_DOC')
 class EnumDoc extends Doc<"enum",EnumDeclaration, EnumDeclarationStructure> {
 
-    constructor(node: EnumDeclaration, context: TsDocGenContext) {
-        super(node, "enum", context);
+    constructor(node: EnumDeclaration, context: TsDocGenContext, sourceFileRelativePath: string) {
+        super(node, "enum", context, sourceFileRelativePath);
     }
 
     public override toString() {

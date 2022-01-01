@@ -26,8 +26,8 @@ class FunctionDoc extends Doc<"function", FunctionDeclaration , FunctionDeclarat
     public typeParameters!: TypeParameterDoc[];
     public parameters!: ParameterDoc[];
 
-    constructor(node: FunctionDeclaration, context: TsDocGenContext) {
-        super(node, "function", context);
+    constructor(node: FunctionDeclaration, context: TsDocGenContext, sourceFileRelativePath: string) {
+        super(node, "function", context, sourceFileRelativePath);
 
         this.isAsync = this.node.isAsync();
         this.isGenerator = this.node.isGenerator();
@@ -50,7 +50,7 @@ class FunctionDoc extends Doc<"function", FunctionDeclaration , FunctionDeclarat
 
     private getOverloads() {
         return this.node.getOverloads().map((overload) => {
-            return new FunctionDoc(overload, this.context);
+            return new FunctionDoc(overload, this.context, this. sourceFileRelativePath);
         })
     }
 }

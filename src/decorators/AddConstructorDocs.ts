@@ -7,10 +7,10 @@ import type ClassDoc from "../models/documentation/ClassDoc";
 /**
  * Gets the call, index or construct signatures
  */
-function getConstructors(node: Node, context: TsDocGenContext, parent: ClassDoc) {
+function getConstructors(node: Node, context: TsDocGenContext, sourceFileRelativePath: string, parent: ClassDoc) {
     if (Node.isClassLikeDeclarationBase(node)) {
         return node.getConstructors().map((constructor) => {
-            return new ConstructorDoc(constructor, context, parent);
+            return new ConstructorDoc(constructor, context, sourceFileRelativePath, parent);
         });
     }
     return [];
@@ -28,7 +28,7 @@ function AddConstructorDocs<T extends ClassType>(constructor: T) {
 
             const target = this as any;
 
-            target.constructors = getConstructors(node, args[1], target);
+            target.constructors = getConstructors(node, args[1], args[2], target);
 
             const toJSON = target.toJSON.bind(this);
 

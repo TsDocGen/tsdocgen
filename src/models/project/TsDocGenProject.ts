@@ -1,5 +1,5 @@
 import { join } from "path";
-import { ExportedDeclarations, Project, SourceFile, Node, SyntaxKind, TypeAliasDeclaration, ClassDeclaration, EnumDeclaration, FunctionDeclaration, InterfaceDeclaration, VariableDeclaration, TypeChecker } from "ts-morph";
+import { Project, Node, SyntaxKind, TypeAliasDeclaration, ClassDeclaration, EnumDeclaration, FunctionDeclaration, InterfaceDeclaration, VariableDeclaration, TypeChecker } from "ts-morph";
 import { ProjectNameNotConfiguredError } from "../../errors";
 import { DocUnionJSON } from "../../types/docs";
 import { ProjectDeclarationsMap, SourceFileDeclarationMap, TsDocGenProjectJSON, TSDocGenProjectProps } from "../../types/tsdocgen";
@@ -95,39 +95,42 @@ class TsDocGenProject {
      * @param node A `ts-morph` Node.
      * @returns 
      */
-    private buildDocs = (node: Node) => {
+    private buildDocs = (node: Node, sourceFileRelativePath: string) => {
         const kind = node.getKind();
 
         switch (kind) {
             case SyntaxKind.ClassDeclaration:
-                return new ClassDoc(node as ClassDeclaration, this.context);
+                return new ClassDoc(node as ClassDeclaration, this.context, sourceFileRelativePath);
             case SyntaxKind.FunctionDeclaration:
-                return new FunctionDoc(node as FunctionDeclaration, this.context);
+                return new FunctionDoc(node as FunctionDeclaration, this.context, sourceFileRelativePath);
             case SyntaxKind.TypeAliasDeclaration:
-                return new TypeAliasDoc(node as TypeAliasDeclaration, this.context);
+                return new TypeAliasDoc(node as TypeAliasDeclaration, this.context, sourceFileRelativePath);
             case SyntaxKind.InterfaceDeclaration:
-                return new InterfaceDoc(node as InterfaceDeclaration, this.context);
+                return new InterfaceDoc(node as InterfaceDeclaration, this.context, sourceFileRelativePath);
             case SyntaxKind.EnumDeclaration:
-                return new EnumDoc(node as EnumDeclaration, this.context);
+                return new EnumDoc(node as EnumDeclaration, this.context, sourceFileRelativePath);
             case SyntaxKind.VariableDeclaration:
-                return new VariableDoc(node as VariableDeclaration, this.context);
+                return new VariableDoc(node as VariableDeclaration, this.context, sourceFileRelativePath);
             default:
-                return new UnknownDoc(node, this.context);
+                return new UnknownDoc(node, this.context, sourceFileRelativePath);
         }
     }
 
     private getDeclarations = (): ProjectDeclarationsMap => {
-        const map: Record<string, { path: string, sourceFile: SourceFile, exportedDeclarations: ReadonlyMap<string, ExportedDeclarations[]> }> = {};
+        const map: ProjectDeclarationsMap= {};
 
         const sourceFiles = this.tsProject.addSourceFilesAtPaths([this.config.entryPoint]);
 
         for (const sourceFile of sourceFiles) {
-            const path = sourceFile.getFilePath().replace(join(process.cwd(), this.config.rootDir), '');
+            const rootDir = join(process.cwd(), this.config.rootDir);
+            const path = sourceFile.getFilePath().replace(rootDir, '');
+            const relativePath = sourceFile.getFilePath().replace(process.cwd(), '');
 
             map[path] = {
                 path: path,
                 sourceFile: sourceFile,
                 exportedDeclarations: sourceFile.getExportedDeclarations(),
+                relativePath: relativePath,
             }
         }
 
@@ -161,7 +164,9 @@ class TsDocGenProject {
                 }
 
                 for (const [name, declarations] of sourceFileResult.exportedDeclarations) {
-                    const doc = this.buildDocs(declarations[0]);
+                    console.log(sourceFileResult.relativePath);
+                    console.log(declarations[0].getStartLineNumber());
+                    const doc = this.buildDocs(declarations[0], sourceFileResult.relativePath);
 
                     const docName = name === 'default' ? doc.name : name;
 

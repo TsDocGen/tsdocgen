@@ -16,11 +16,11 @@ export interface ConstructorDocJSON extends BaseDocJSON<"constructor"> {
 class ConstructorDoc extends BaseDoc<"constructor", ConstructorDeclaration , ConstructorDeclarationStructure, ClassDoc> {
     public parameters: ParameterDoc[] = [];
 
-    constructor(node: ConstructorDeclaration, context: TsDocGenContext, parent: ClassDoc) {
-        super(node, "constructor", context, parent);
+    constructor(node: ConstructorDeclaration, context: TsDocGenContext, sourceFileRelativePath: string, parent: ClassDoc) {
+        super(node, "constructor", context, sourceFileRelativePath, parent);
 
         this.name = "constructor";
-        this.parameters = getParameters(this.node, this.context, this.parent?.tags || [], this);
+        this.parameters = getParameters(this.node, this.context, this.parent?.tags || [], sourceFileRelativePath, this);
 
         // Effects
         this.setDescription(this.parent?.description || '');

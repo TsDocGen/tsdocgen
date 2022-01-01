@@ -4,6 +4,7 @@ import { TsConfigNotFoundError, TsDocGenConfigNotFoundError } from "../../errors
 import { cosmiconfigSync } from 'cosmiconfig';
 import getPackageJson from "../../utils/getPackageJson";
 import * as path from "path";
+import Reporter from "../../reporter";
 
 class Config {
   /** The {@link TSDocGenConfig} configation file.  */
@@ -12,12 +13,15 @@ class Config {
   /** The parsed projects defined in the {@link TSDocGenConfig}. */
   public projects: TSDocGenProjectProps[];
 
+  /** the cosmi config instance. */
   private cosmiconfig: ReturnType<typeof cosmiconfigSync>;
 
   constructor() {
     this.cosmiconfig = cosmiconfigSync('tsdocgen');
     this.tsDocGenConfig = this.getTsDocgenConfig();
     this.projects = this.getProjects();
+
+    Reporter.success('found tsconfig.json and tsdocgen.config.js');
   }
 
   // ----------- Public Methods -----------

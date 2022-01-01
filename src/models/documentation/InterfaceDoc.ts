@@ -33,8 +33,8 @@ class InterfaceDoc extends Doc<"interface",InterfaceDeclaration, InterfaceDeclar
     public properties!: PropertyDoc[];
     public typeParameters!: TypeParameterDoc[];
 
-    constructor(node: InterfaceDeclaration, context: TsDocGenContext) {
-        super(node, "interface", context);
+    constructor(node: InterfaceDeclaration, context: TsDocGenContext, sourceFileRelativePath: string) {
+        super(node, "interface", context, sourceFileRelativePath);
 
         this.baseDeclarations = this.getBaseDeclarations();
         this.methods = [...this.methods, ...this.getMethods()];
@@ -56,16 +56,16 @@ class InterfaceDoc extends Doc<"interface",InterfaceDeclaration, InterfaceDeclar
 
     private getBaseDeclarations() {
         return this.node.getBaseDeclarations().map((declaration) => {
-            if (Node.isTypeAliasDeclaration(declaration)) return new TypeAliasDoc(declaration, this.context);
-            else if (Node.isClassDeclaration(declaration)) return new ClassDoc(declaration, this.context);
-            else if (Node.isInterfaceDeclaration(declaration)) return new InterfaceDoc(declaration, this.context);
+            if (Node.isTypeAliasDeclaration(declaration)) return new TypeAliasDoc(declaration, this.context, this.sourceFileRelativePath);
+            else if (Node.isClassDeclaration(declaration)) return new ClassDoc(declaration, this.context, this.sourceFileRelativePath);
+            else if (Node.isInterfaceDeclaration(declaration)) return new InterfaceDoc(declaration, this.context, this. sourceFileRelativePath);
             else return null
         }).filter(notEmpty);
     }
 
     private getMethods() {
         return this.node.getMethods().map((method) => {
-            return new MethodDoc(method, this.context);
+            return new MethodDoc(method, this.context, this.sourceFileRelativePath);
         });
     }
 }

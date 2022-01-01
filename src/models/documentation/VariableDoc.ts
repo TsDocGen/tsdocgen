@@ -17,8 +17,8 @@ class VariableDoc extends Doc<"variable", VariableDeclaration, VariableDeclarati
     private statementStructure: VariableStatementStructure | undefined;
     private values: VariableDoc[];
 
-    constructor(node: VariableDeclaration, context: TsDocGenContext) {
-        super(node, "variable", context);
+    constructor(node: VariableDeclaration, context: TsDocGenContext, sourceFileRelativePath: string) {
+        super(node, "variable", context, sourceFileRelativePath);
 
         this.statement = this.node.getVariableStatement();
         this.statementStructure = this.statement?.getStructure();
@@ -49,7 +49,7 @@ class VariableDoc extends Doc<"variable", VariableDeclaration, VariableDeclarati
 
         if (list) {
             return list.getChildrenOfKind(SyntaxKind.VariableDeclaration).map((variableDeclaration) => {
-                return new VariableDoc(variableDeclaration, this.context);
+                return new VariableDoc(variableDeclaration, this.context, this.sourceFileRelativePath);
             });
         }
         

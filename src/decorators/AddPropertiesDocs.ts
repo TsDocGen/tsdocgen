@@ -24,13 +24,13 @@ function convertArrowFunctionsToMethods(properties: PropertyDoc[]): PropertiesAn
     }, { methods: [], properties: []} as PropertiesAndMethodsMap)
 }
 
-function getPropertiesAndMethods(node: Node, context: TsDocGenContext) {
+function getPropertiesAndMethods(node: Node, context: TsDocGenContext, sourceFileRelativePath: string) {
     if (Node.isTypedNode(node)) {
         const type = node.getTypeNode();
 
         if (Node.isTypeLiteralNode(type)) {
             const properties = type.getProperties().map((property) => {
-                return new PropertyDoc(property, context)
+                return new PropertyDoc(property, context, sourceFileRelativePath)
             });
             return convertArrowFunctionsToMethods(properties);
         }
@@ -38,14 +38,14 @@ function getPropertiesAndMethods(node: Node, context: TsDocGenContext) {
 
     if (Node.isTypeElementMemberedNode(node)) {
         const properties = node.getProperties().map((property) => {
-            return new PropertyDoc(property, context)
+            return new PropertyDoc(property, context, sourceFileRelativePath)
         });
         return convertArrowFunctionsToMethods(properties);
     }
 
     if (Node.isClassLikeDeclarationBase(node)) {
         const properties = node.getProperties().map((property) => {
-            return new PropertyDoc(property, context)
+            return new PropertyDoc(property, context, sourceFileRelativePath)
         });
         return convertArrowFunctionsToMethods(properties);
     }
@@ -66,7 +66,7 @@ function AddPropertiesDocs<T extends ClassType>(constructor: T) {
 
             const target = this as any;
 
-            const { methods, properties } = getPropertiesAndMethods(node, args[1]);
+            const { methods, properties } = getPropertiesAndMethods(node, args[1], args[2]);
 
             target.properties = [...(target.properties || []), ...properties];
             target.methods = [...(target.methods || []), ...methods];

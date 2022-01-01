@@ -7,10 +7,10 @@ import findTagForDoc from "../utils/findTagForDoc";
 /**
  * Gets the call, index or construct signatures
  */
-function getTypeParameters(node: Node, context: TsDocGenContext, tags: TsDocGenDoc['tags']) {
+function getTypeParameters(node: Node, context: TsDocGenContext, tags: TsDocGenDoc['tags'], sourceFileRelativePath: string) {
     if (Node.isTypeParameteredNode(node)) {
         return node.getTypeParameters().map((typeParameter) => {
-            const doc = new TypeParameterDoc(typeParameter, context);
+            const doc = new TypeParameterDoc(typeParameter, context, sourceFileRelativePath);
 
             const tag = findTagForDoc(tags, doc.name, 'typeParam');
 
@@ -34,7 +34,7 @@ function AddTypeParameterDocs<T extends ClassType>(constructor: T) {
 
             const target = this as any;
 
-            target.typeParameters = getTypeParameters(node, args[1], target.tags);
+            target.typeParameters = getTypeParameters(node, args[1], target.tags, args[2]);
 
             const toJSON = target.toJSON.bind(this);
 

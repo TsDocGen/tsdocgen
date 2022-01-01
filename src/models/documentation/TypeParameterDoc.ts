@@ -12,8 +12,8 @@ export interface TypeParameterDocJSON extends BaseDocJSON<"type-parameter"> {
 @EmitDocEvent('CREATE_TYPE_PARAMETER_DOC')
 class TypeParameterDoc extends BaseDoc<"type-parameter", TypeParameterDeclaration, TypeParameterDeclarationStructure> {
 
-    constructor(node: TypeParameterDeclaration, context: TsDocGenContext) {
-        super(node, "type-parameter", context);
+    constructor(node: TypeParameterDeclaration, context: TsDocGenContext, sourceFileRelativePath: string) {
+        super(node, "type-parameter", context, sourceFileRelativePath);
     }
 
     public override toJSON(): TypeParameterDocJSON {

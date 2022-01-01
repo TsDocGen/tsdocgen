@@ -7,6 +7,7 @@ import type TsDocGenTheme from "../theme/Theme";
 import type { DocUnion, DocUnionJSON } from "./docs";
 
 export interface BaseDocJSON<T extends string = string> {
+  id: string;
   type: T;
   name: string;
   isDefaultExport: boolean;
@@ -15,6 +16,8 @@ export interface BaseDocJSON<T extends string = string> {
       tags: TsDocGenDoc['tags'];
   },
   isExported: boolean;
+  sourceFileRelativePath: string;
+  startLineNumber: number;
 };
 
 export type TSDocGenProjectProps = {
@@ -100,9 +103,10 @@ export interface TSDocGenResult {
 }
 
 export interface SourceFileDeclarations { 
-    path: string, 
-    sourceFile: SourceFile, 
-    exportedDeclarations: ReadonlyMap<string, ExportedDeclarations[]> 
+    path: string;
+    sourceFile: SourceFile;
+    exportedDeclarations: ReadonlyMap<string, ExportedDeclarations[]>;
+    relativePath: string;
 }
 
 export interface ProjectDeclarationsMap extends Record<string, SourceFileDeclarations> {};

@@ -7,8 +7,8 @@ import type FunctionDoc from '../models/documentation/FunctionDoc';
 import type MethodDoc from '../models/documentation/MethodDoc';
 import type ConstructorDoc from '../models/documentation/ConstructorDoc';
 
-function createParameterDoc(parameter: ParameterDeclaration, context: TsDocGenContext, tags: TsDocGenDoc['tags'], parent: FunctionDoc | MethodDoc | ConstructorDoc) {
-    const doc = new ParameterDoc(parameter, context, parent);
+function createParameterDoc(parameter: ParameterDeclaration, context: TsDocGenContext, tags: TsDocGenDoc['tags'], sourceFileRelativePath: string, parent: FunctionDoc | MethodDoc | ConstructorDoc) {
+    const doc = new ParameterDoc(parameter, context, sourceFileRelativePath, parent);
 
     const tag = findTagForDoc(tags, doc.name, 'param');
 
@@ -20,10 +20,10 @@ function createParameterDoc(parameter: ParameterDeclaration, context: TsDocGenCo
 /**
  * Gets the call, index or construct signatures
  */
-function getParameters(node: Node, context: TsDocGenContext, tags: TsDocGenDoc['tags'], parent: FunctionDoc | MethodDoc | ConstructorDoc) {
+function getParameters(node: Node, context: TsDocGenContext, tags: TsDocGenDoc['tags'], sourceFileRelativePath: string, parent: FunctionDoc | MethodDoc | ConstructorDoc) {
     if (Node.isParameteredNode(node) || Node.isFunctionTypeNode(node)) {
         return node.getParameters().map((parameter) => {
-            return createParameterDoc(parameter, context, tags, parent);
+            return createParameterDoc(parameter, context, tags, sourceFileRelativePath, parent);
         });
     }
 
@@ -31,7 +31,7 @@ function getParameters(node: Node, context: TsDocGenContext, tags: TsDocGenDoc['
         const [arrowFunction] = node.getChildrenOfKind(ts.SyntaxKind.ArrowFunction);
 
         return arrowFunction?.getParameters().map((parameter) => {
-            return createParameterDoc(parameter, context, tags, parent);
+            return createParameterDoc(parameter, context, tags, sourceFileRelativePath, parent);
         }) ?? [];
     }
    

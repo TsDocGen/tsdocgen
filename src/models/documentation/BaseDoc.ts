@@ -15,6 +15,7 @@ import type TsDocGenContext from '../context';
  * @typeParam S Generic Structure type from `ts-morph`
  */
 class BaseDoc<T extends string, N extends Node, S extends Structure = Structure, P extends BaseDoc<string, Node, Structure, any> | undefined = undefined> {
+    public id: string;
     public description!: string;
     public tags!: TsDocGenDoc['tags'];
     public node: N;
@@ -26,13 +27,18 @@ class BaseDoc<T extends string, N extends Node, S extends Structure = Structure,
     public symbol: Symbol | undefined;
     public tsType: Type | undefined;
     public context: TsDocGenContext;
+    public sourceFileRelativePath: string;
+    public startLineNumber: number;
     public parent?: P = undefined;
 
-    constructor(node: N, type: T, context: TsDocGenContext, parent?: P) {
+    constructor(node: N, type: T, context: TsDocGenContext, sourceFileRelativePath: string, parent?: P) {
         // Variables
         this.node = node;
         this.parent = parent;
         this.context = context;
+        this.sourceFileRelativePath = sourceFileRelativePath;
+        this.startLineNumber = this.node.getStartLineNumber();
+        this.id = `${this.sourceFileRelativePath}:${this.startLineNumber}`
         this.type = type;
         this.symbol = node.getSymbol();
         this.name = this.getName();
@@ -51,6 +57,7 @@ class BaseDoc<T extends string, N extends Node, S extends Structure = Structure,
     /** Returns a JSON representation of a doc. */
     public toJSON(): BaseDocJSON<T> & Record<string, any> {
         return {
+            id: this.id,
             type: this.type,
             name: this.name,
             isDefaultExport: this.isDefaultExport,
@@ -58,7 +65,9 @@ class BaseDoc<T extends string, N extends Node, S extends Structure = Structure,
                 description: this.description,
                 tags: this.tags,
             },
-            isExported: Node.isExportableNode(this.node) ? this.node.isExported() : false
+            isExported: Node.isExportableNode(this.node) ? this.node.isExported() : false,
+            sourceFileRelativePath: this.sourceFileRelativePath,
+            startLineNumber: this.startLineNumber
         }
     }
 

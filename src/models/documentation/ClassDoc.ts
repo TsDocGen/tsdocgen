@@ -31,8 +31,8 @@ class ClassDoc extends Doc<"class",ClassDeclaration, ClassDeclarationStructure> 
     public typeParameters!: TypeParameterDoc[];
     public constructors!: ConstructorDoc[];
     
-    constructor(node: ClassDeclaration, context: TsDocGenContext) {
-        super(node, "class", context);
+    constructor(node: ClassDeclaration, context: TsDocGenContext, sourceFileRelativePath: string) {
+        super(node, "class", context, sourceFileRelativePath);
 
         // Variables
         this.isAbstract = this.node.isAbstract();
@@ -42,13 +42,13 @@ class ClassDoc extends Doc<"class",ClassDeclaration, ClassDeclarationStructure> 
 
     private getStaticMethods = () => {
         return this.node.getStaticMethods().map((staticMethod) => {
-            return new MethodDoc(staticMethod, this.context);
+            return new MethodDoc(staticMethod, this.context, this.sourceFileRelativePath);
         });
     }
 
     private getInstanceMethods = () => {
         return this.node.getInstanceMethods().map((instanceMethod) => {
-            return new MethodDoc(instanceMethod, this.context);
+            return new MethodDoc(instanceMethod, this.context, this.sourceFileRelativePath);
         });
     }
 

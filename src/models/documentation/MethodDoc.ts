@@ -19,8 +19,8 @@ class MethodDoc extends BaseDoc<"method", MethodDeclaration | MethodSignature | 
     public scope: string;
     public parameters!: ParameterDoc[];
 
-    constructor(node: MethodDeclaration | MethodSignature | PropertyDeclaration | PropertySignature, context: TsDocGenContext) {
-        super(node, "method", context);
+    constructor(node: MethodDeclaration | MethodSignature | PropertyDeclaration | PropertySignature, context: TsDocGenContext, sourceFileRelativePath: string) {
+        super(node, "method", context, sourceFileRelativePath);
 
         this.scope = this.getScope();
     }
